@@ -1,8 +1,7 @@
-import { Controller, Get, Logger } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { GrpcMethod } from '@nestjs/microservices';
-import type { Metadata, ServerUnaryCall } from '@grpc/grpc-js';
-import { GetHelloResponse } from '@lib/users/users.dto';
+import { GetHelloResponse } from '@app/common/users';
 
 @Controller()
 export class UsersController {
