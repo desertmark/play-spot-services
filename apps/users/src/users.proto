@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package users;
+
+service UsersService {
+  rpc GetHello(GetHelloRequest) returns (GetHelloResponse);
+}
+
+message GetHelloRequest {}
+
+message GetHelloResponse {
+  string message = 1;
+}

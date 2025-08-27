@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  users:
+    image: node:22-alpine
+    container_name: play-spot-users
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - '50052:50051'
+    command: sh -c "npx nest start users --watch"
+    environment:
+      - NODE_ENV=development
+    stdin_open: true
+    tty: true
