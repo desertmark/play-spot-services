@@ -3,7 +3,7 @@ version: '3.8'
 services:
   users:
     image: node:22-alpine
-    container_name: play-spot-users
+    container_name: users
     working_dir: /app
     volumes:
       - .:/app
@@ -12,5 +12,19 @@ services:
     command: sh -c "npx nest start users --watch"
     environment:
       - NODE_ENV=development
+    stdin_open: true
+    tty: true
+  gateway:
+    image: node:22-alpine
+    container_name: gateway
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - '3000:80'
+    command: sh -c "npx nest start gateway --watch"
+    environment:
+      - NODE_ENV=development
+      - USERS_URL=users:50051
     stdin_open: true
     tty: true
