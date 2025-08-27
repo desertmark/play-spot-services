@@ -16,7 +16,9 @@ describe('UsersController', () => {
 
   describe('root', () => {
     it('should return "Hello World!"', () => {
-      expect(usersController.getHello()).toBe('Hello World!');
+      expect(usersController.getHello()).toEqual({
+        message: 'Hello World from users!',
+      });
     });
   });
 });

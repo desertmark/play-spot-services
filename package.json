@@ -71,7 +71,11 @@
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "roots": [
-      "<rootDir>/apps/"
-    ]
+      "<rootDir>/apps/",
+      "<rootDir>/lib/"
+    ],
+    "moduleNameMapper": {
+      "^@lib/(.*)$": "<rootDir>/lib/src/$1"
+    }
   }
 }
