@@ -5,6 +5,7 @@ package users;
 service UsersService {
   rpc GetCurrentUser(GetCurrentUserRequest) returns (UserProfile);
   rpc UpdateUser(UpdateUserRequest) returns (Empty);
+  rpc ValidateJwt(ValidateJwtRequest) returns (ValidateJwtResponse);
 }
 
 message GetCurrentUserRequest {}
@@ -18,8 +19,18 @@ message UserProfile {
 
 message UpdateUserRequest {
   string id = 1;
-  string firstName = 2;
-  string lastName = 3;
+  optional string firstName = 2;
+  optional string lastName = 3;
+}
+
+message ValidateJwtRequest {
+  string jwt = 1;
+}
+
+message ValidateJwtResponse {
+  bool isValid = 1;
+  string userId = 2;
+  optional string error = 3;
 }
 
 message Empty {}

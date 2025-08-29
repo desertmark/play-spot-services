@@ -1,4 +1,8 @@
-import { InjectUsersClient } from '@app/common/decorators';
+import {
+  CurrentMeta,
+  CurrentUser,
+  InjectUsersClient,
+} from '@app/common/decorators';
 import { IUsersClient } from '@app/common/users/users.client';
 import {
   Body,
@@ -13,9 +17,11 @@ import { Metadata } from '@grpc/grpc-js';
 import { GRPC_USERS_SERVICE } from '@app/common/constants';
 import { ApiTags } from '@nestjs/swagger';
 import type { UpdateUserRequest } from '@app/common/users';
+import { Authorized } from './auth.guard';
 
 @ApiTags('Users')
 @Controller('users')
+@Authorized()
 export class UsersGatewayController {
   private usersService: IUsersClient;
 
@@ -27,19 +33,15 @@ export class UsersGatewayController {
   }
 
   @Get('current')
-  async getCurrentUser(@Headers('authorization') authHeader: string) {
-    const metadata = new Metadata();
-    metadata.set('authorization', authHeader);
+  async getCurrentUser(@CurrentMeta() metadata: Metadata) {
     return this.usersService.GetCurrentUser({}, metadata);
   }
 
   @Put('current')
   async updateUser(
-    @Headers('authorization') authHeader: string,
     @Body() body: UpdateUserRequest,
+    @CurrentUser() metadata: Metadata,
   ) {
-    const metadata = new Metadata();
-    metadata.set('authorization', authHeader);
     return await this.usersService.UpdateUser(body, metadata);
   }
 }

@@ -14,6 +14,12 @@ export class SupabaseAdapter {
     );
   }
 
+  async validateJwt(jwt: string) {
+    const res = await this.client.auth.getClaims(jwt);
+    this.logger.debug(`validateJwt`, res?.data?.claims?.email);
+    return res;
+  }
+
   async getCurrentUser(jwt: string): Promise<UserProfile> {
     const res = await this.client.auth.getUser(jwt);
     this.logger.debug(`getCurrentUser: ${JSON.stringify(res)}`);
