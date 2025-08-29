@@ -1,9 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
-
 @Controller()
 export class GatewayController {
-  @Get()
-  getHello(): string {
-    return 'Hello from Gateway!';
+  @Get('health')
+  getHealth(): any {
+    return {
+      status: 'OK',
+      version: '0.0.1',
+    };
   }
 }

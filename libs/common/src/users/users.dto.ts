@@ -1,3 +1,6 @@
-export class GetHelloResponse {
-  constructor(public message: string) {}
+export class UserProfile {
+  constructor(
+    public id: string,
+    public email: string,
+  ) {}
 }

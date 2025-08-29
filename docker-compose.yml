@@ -10,8 +10,8 @@ services:
     ports:
       - '50052:50051'
     command: sh -c "npx nest start users --watch"
-    environment:
-      - NODE_ENV=development
+    env_file:
+      - .env
     stdin_open: true
     tty: true
   gateway:
@@ -23,8 +23,11 @@ services:
     ports:
       - '3000:80'
     command: sh -c "npx nest start gateway --watch"
-    environment:
-      - NODE_ENV=development
-      - USERS_URL=users:50051
+    env_file:
+      - .env
     stdin_open: true
     tty: true
+networks:
+  default:
+    name: supabase_network_play-spot-services
+    external: true

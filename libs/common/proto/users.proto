@@ -3,11 +3,13 @@ syntax = "proto3";
 package users;
 
 service UsersService {
-  rpc GetHello(GetHelloRequest) returns (GetHelloResponse);
+  rpc GetCurrentUser(GetCurrentUserRequest) returns (UserProfile);
 }
 
-message GetHelloRequest {}
+message GetCurrentUserRequest {}
 
-message GetHelloResponse {
-  string message = 1;
+message UserProfile {
+  string id = 1;
+  string email = 2;
 }
+
