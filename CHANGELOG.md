@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Supabase integration for database operations
+- Swagger documentation for the Gateway service
+- API endpoint to get current user details in the Users service
+- API endpoint to update user details in the Users service
 - Changelog file
 
 ## [0.0.1] - 2025-08-28

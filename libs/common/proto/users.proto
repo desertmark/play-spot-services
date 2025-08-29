@@ -4,6 +4,7 @@ package users;
 
 service UsersService {
   rpc GetCurrentUser(GetCurrentUserRequest) returns (UserProfile);
+  rpc UpdateUser(UpdateUserRequest) returns (Empty);
 }
 
 message GetCurrentUserRequest {}
@@ -11,5 +12,15 @@ message GetCurrentUserRequest {}
 message UserProfile {
   string id = 1;
   string email = 2;
+  string firstName = 3;
+  string lastName = 4;
 }
+
+message UpdateUserRequest {
+  string id = 1;
+  string firstName = 2;
+  string lastName = 3;
+}
+
+message Empty {}
 
