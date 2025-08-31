@@ -28,16 +28,15 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const jwt = request.headers['authorization']?.split(' ')[1];
 
-    const res = await firstValueFrom(this.usersService.ValidateJwt({ jwt }));
-    if (res.error) {
-      this.logger.debug(`Unauthorized request: ${res.error}`);
-      throw new UnauthorizedException(res.error);
+    try {
+      const res = await firstValueFrom(this.usersService.ValidateJwt({ jwt }));
+      request['userId'] = res.userId;
+      this.logger.debug(`Authenticated user ID: ${res.userId}`);
+      return res.isValid;
+    } catch (error) {
+      this.logger.error(`Unauthorized request`, error);
+      throw new UnauthorizedException(error.message);
     }
-    request['user'] = {
-      id: res.userId,
-    };
-    this.logger.debug(`Authenticated user ID: ${res.userId}`);
-    return res.isValid;
   }
 }
 

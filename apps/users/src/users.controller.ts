@@ -19,32 +19,21 @@ export class UsersController {
 
   @GrpcMethod(GRPC_USERS_SERVICE, 'GetCurrentUser')
   async getCurrentUser(_: {}, metadata: Metadata): Promise<UserProfile> {
-    const authHeader = metadata.get('authorization')[0] as string;
-    if (!authHeader || !authHeader?.toLowerCase().startsWith('bearer ')) {
-      throw new RpcException({
-        code: status.UNAUTHENTICATED,
-        message: 'Token JWT required',
-      });
-    }
-
-    const jwt = authHeader.substring(7); // Remover 'Bearer '
-
-    return this.supabase.getCurrentUser(jwt);
+    const userId = metadata.get('userId')[0] as string;
+    return this.supabase.getUserById(userId);
   }
 
   @GrpcMethod(GRPC_USERS_SERVICE, 'UpdateUser')
-  async updateUser(user: UpdateUserRequest, metadata: Metadata): Promise<void> {
-    const { id } = JSON.parse(metadata.get('user')[0]?.toString());
-    return await this.supabase.updateUser(id, user);
+  async updateUser(
+    user: UpdateUserRequest,
+    metadata: Metadata,
+  ): Promise<UserProfile> {
+    const userId = metadata.get('userId')[0] as string;
+    return this.supabase.updateUser(userId, user);
   }
 
   @GrpcMethod(GRPC_USERS_SERVICE, 'ValidateJwt')
   async validateJwt({ jwt }: ValidateJwtRequest): Promise<ValidateJwtResponse> {
-    const { data, error } = await this.supabase.validateJwt(jwt);
-    return {
-      isValid: !error,
-      userId: data?.claims?.sub || '',
-      error: error?.message,
-    };
+    return await this.supabase.validateJwt(jwt);
   }
 }

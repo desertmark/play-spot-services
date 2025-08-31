@@ -16,7 +16,7 @@ export const CurrentMeta = createParamDecorator(
     const request = ctx.switchToHttp().getRequest();
     const meta = new GrpcMetadata();
     meta.set('authorization', request.headers?.authorization);
-    meta.set('user', JSON.stringify(request.user));
+    meta.set('userId', request?.userId);
     return meta;
   },
 );

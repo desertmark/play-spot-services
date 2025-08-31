@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
 import { Settings } from './settings';
-import { UpdateUserRequest, UserProfile } from '@app/common/users';
+import { UserProfile, ValidateJwtResponse } from '@app/common/users';
+import type { UpdateUserRequest } from '@app/common/users';
+import { RpcException } from '@nestjs/microservices';
+import { status } from '@grpc/grpc-js';
 
 @Injectable()
 export class SupabaseAdapter {
@@ -14,29 +17,84 @@ export class SupabaseAdapter {
     );
   }
 
-  async validateJwt(jwt: string) {
-    const res = await this.client.auth.getClaims(jwt);
-    this.logger.debug(`validateJwt`, res?.data?.claims?.email);
-    return res;
+  async validateJwt(jwt: string): Promise<ValidateJwtResponse> {
+    try {
+      const res = await this.client.auth.getClaims(jwt);
+      if (res.error) {
+        throw res.error;
+      }
+      this.logger.debug(`validateJwt`, res?.data?.claims?.email);
+      return {
+        isValid: !res.error,
+        userId: res?.data?.claims?.sub || '',
+      };
+    } catch (error) {
+      this.logger.debug(`validateJwt: ${error}`);
+      throw new RpcException({
+        code: status.UNAUTHENTICATED,
+        message: error.message,
+      });
+    }
   }
 
-  async getCurrentUser(jwt: string): Promise<UserProfile> {
-    const res = await this.client.auth.getUser(jwt);
-    this.logger.debug(`getCurrentUser: ${JSON.stringify(res)}`);
-    return new UserProfile(
-      res.data.user?.id!,
-      res.data.user?.email!,
-      res.data.user?.user_metadata?.firstName,
-      res.data.user?.user_metadata?.lastName,
-    );
+  @HandleError()
+  async getUserById(id: string): Promise<UserProfile> {
+    const res = await this.client.auth.admin.getUserById(id);
+    if (res.error) {
+      throw res.error;
+    }
+    return this.toUserProfile(res.data.user!);
   }
-
-  async updateUser(id: string, user: UpdateUserRequest): Promise<void> {
+  @HandleError()
+  async updateUser(id: string, user: UpdateUserRequest): Promise<UserProfile> {
     this.logger.debug(`updateUser: ${JSON.stringify(user)}`);
-    this.client.auth.admin.updateUserById(id, {
+    const res = await this.client.auth.admin.updateUserById(id, {
       user_metadata: {
         ...user,
       },
     });
+    if (res.error) {
+      throw res.error;
+    }
+    return this.toUserProfile(res.data.user);
   }
+
+  private toUserProfile(user: User): UserProfile {
+    return new UserProfile(
+      user.id,
+      user.email!,
+      user.user_metadata?.firstName,
+      user.user_metadata?.lastName,
+    );
+  }
+}
+
+// method decorator to handle error
+function HandleError() {
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: TypedPropertyDescriptor<any>,
+  ) {
+    const originalMethod = descriptor.value;
+    descriptor.value = async function (...args: any[]) {
+      try {
+        return await originalMethod.apply(this, args);
+      } catch (error) {
+        this?.logger?.error?.(propertyKey, error);
+        let code = status.UNKNOWN;
+        if (error.message?.toLowerCase().includes('not found')) {
+          code = status.NOT_FOUND;
+        }
+        if (error.message?.toLowerCase().includes('expected parameter')) {
+          code = status.INVALID_ARGUMENT;
+        }
+        throw new RpcException({
+          code,
+          message: error.message.replace(/\S*supabase\S*/gi, ''),
+        });
+      }
+    };
+    return descriptor;
+  };
 }

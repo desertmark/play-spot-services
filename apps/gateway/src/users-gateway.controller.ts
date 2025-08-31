@@ -40,7 +40,7 @@ export class UsersGatewayController {
   @Put('current')
   async updateUser(
     @Body() body: UpdateUserRequest,
-    @CurrentUser() metadata: Metadata,
+    @CurrentMeta() metadata: Metadata,
   ) {
     return await this.usersService.UpdateUser(body, metadata);
   }
