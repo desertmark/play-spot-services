@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { GatewayModule } from './gateway.module';
-import { Logger } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(GatewayModule);
-
+  app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
     .setTitle('Play Spot')
     .setDescription('Play Spot API Reference')

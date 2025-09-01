@@ -60,12 +60,12 @@ export class SupabaseAdapter {
   }
 
   private toUserProfile(user: User): UserProfile {
-    return new UserProfile(
-      user.id,
-      user.email!,
-      user.user_metadata?.firstName,
-      user.user_metadata?.lastName,
-    );
+    const profile = new UserProfile();
+    profile.id = user.id;
+    profile.email = user.email!;
+    profile.firstName = user.user_metadata?.firstName;
+    profile.lastName = user.user_metadata?.lastName;
+    return profile;
   }
 }
 

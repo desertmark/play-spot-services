@@ -3,6 +3,7 @@ import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { UsersModule } from './users.module';
 import { GRPC_USERS_PACKAGE } from '@app/common/constants';
 import { join } from 'path';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -16,6 +17,7 @@ async function bootstrap() {
       },
     },
   );
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen();
 }
 bootstrap();

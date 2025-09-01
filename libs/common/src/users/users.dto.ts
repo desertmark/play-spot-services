@@ -1,13 +1,17 @@
-export class UserProfile {
-  constructor(
-    public id: string,
-    public email: string,
-    public firstName?: string,
-    public lastName?: string,
-  ) {}
+import { IsOptional } from 'class-validator';
+
+export class UpdateUserRequest {
+  @IsOptional()
+  firstName?: string;
+  @IsOptional()
+  lastName?: string;
 }
 
-export type UpdateUserRequest = Omit<UserProfile, 'email' | 'id'>;
+export class UserProfile extends UpdateUserRequest {
+  id: string;
+  email: string;
+}
+
 export interface ValidateJwtRequest {
   jwt: string;
 }

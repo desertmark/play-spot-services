@@ -11,6 +11,7 @@ import {
   Headers,
   Put,
   UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import type { ClientGrpc } from '@nestjs/microservices';
 import { Metadata } from '@grpc/grpc-js';
@@ -18,6 +19,7 @@ import { GRPC_USERS_SERVICE } from '@app/common/constants';
 import { ApiTags } from '@nestjs/swagger';
 import type { UpdateUserRequest } from '@app/common/users';
 import { Authorized } from './auth.guard';
+import { RequiredBody } from './required-body.guard';
 
 @ApiTags('Users')
 @Controller('users')
@@ -38,6 +40,7 @@ export class UsersGatewayController {
   }
 
   @Put('current')
+  @RequiredBody()
   async updateUser(
     @Body() body: UpdateUserRequest,
     @CurrentMeta() metadata: Metadata,
