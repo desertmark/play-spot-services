@@ -17,7 +17,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/play-spot-services/test/jest-e2e.json",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
     "protoc": "npx protoc -I=./libs/common/proto   --include_imports   --include_source_info   --descriptor_set_out=./protos/users.pb   ./libs/common/proto/users.proto"
   },
   "dependencies": {
