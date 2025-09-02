@@ -14,8 +14,11 @@ describe('GatewayController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(gatewayController.getHello()).toBe('Hello from Gateway!');
+    it('should return status and version', () => {
+      expect(gatewayController.getHealth()).toEqual({
+        status: 'OK',
+        version: '0.0.1',
+      });
     });
   });
 });

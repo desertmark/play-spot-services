@@ -1,18 +1,6 @@
-import {
-  CurrentMeta,
-  CurrentUser,
-  InjectUsersClient,
-} from '@app/common/decorators';
+import { CurrentMeta, InjectUsersClient } from '@app/common/decorators';
 import { IUsersClient } from '@app/common/users/users.client';
-import {
-  Body,
-  Controller,
-  Get,
-  Headers,
-  Put,
-  UnauthorizedException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Body, Controller, Get, Put } from '@nestjs/common';
 import type { ClientGrpc } from '@nestjs/microservices';
 import { Metadata } from '@grpc/grpc-js';
 import { GRPC_USERS_SERVICE } from '@app/common/constants';

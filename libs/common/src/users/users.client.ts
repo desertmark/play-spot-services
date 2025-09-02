@@ -9,6 +9,9 @@ import { Metadata } from '@grpc/grpc-js';
 
 export interface IUsersClient {
   GetCurrentUser(data: {}, metadata: Metadata): Observable<UserProfile>;
-  UpdateUser(data: UpdateUserRequest, metadata: Metadata): Observable<void>;
+  UpdateUser(
+    data: UpdateUserRequest,
+    metadata: Metadata,
+  ): Observable<UserProfile>;
   ValidateJwt(data: ValidateJwtRequest): Observable<ValidateJwtResponse>;
 }

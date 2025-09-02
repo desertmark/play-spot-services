@@ -1,10 +1,10 @@
 import { Controller } from '@nestjs/common';
-import { GrpcMethod, RpcException } from '@nestjs/microservices';
+import { GrpcMethod } from '@nestjs/microservices';
 
 import type { Metadata } from '@grpc/grpc-js';
-import { status } from '@grpc/grpc-js';
 
 import type {
+  GetUserByIdRequest,
   UpdateUserRequest,
   UserProfile,
   ValidateJwtRequest,
@@ -20,6 +20,11 @@ export class UsersController {
   @GrpcMethod(GRPC_USERS_SERVICE, 'GetCurrentUser')
   async getCurrentUser(_: {}, metadata: Metadata): Promise<UserProfile> {
     const userId = metadata.get('userId')[0] as string;
+    return this.supabase.getUserById(userId);
+  }
+
+  @GrpcMethod(GRPC_USERS_SERVICE, 'GetUserById')
+  async getUserById({ userId }: GetUserByIdRequest): Promise<UserProfile> {
     return this.supabase.getUserById(userId);
   }
 

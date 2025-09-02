@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Swagger documentation for the Gateway service
 - API endpoint to get current user details in the Users service
 - API endpoint to update user details in the Users service
+- Grpc endpoint to get user by id details in the Users service
+- Validation for both gateway and users services using class-validator
+- Unit tests for new endpoints and functionalities
+
 - Changelog file
 
 ## [0.0.1] - 2025-08-28

@@ -4,11 +4,16 @@ package users;
 
 service UsersService {
   rpc GetCurrentUser(GetCurrentUserRequest) returns (UserProfile);
+  rpc GetUserById(GetUserByIdRquest) returns (UserProfile);
   rpc UpdateUser(UpdateUserRequest) returns (UserProfile);
   rpc ValidateJwt(ValidateJwtRequest) returns (ValidateJwtResponse);
 }
 
 message GetCurrentUserRequest {}
+
+message GetUserByIdRquest {
+  string userId = 1;
+}
 
 message UserProfile {
   string id = 1;

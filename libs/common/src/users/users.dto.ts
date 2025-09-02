@@ -7,6 +7,10 @@ export class UpdateUserRequest {
   lastName?: string;
 }
 
+export class GetUserByIdRequest {
+  userId: string;
+}
+
 export class UserProfile extends UpdateUserRequest {
   id: string;
   email: string;
