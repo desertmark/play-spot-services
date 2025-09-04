@@ -19,6 +19,15 @@
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
     },
+    "facilities": {
+      "type": "application",
+      "root": "apps/facilities",
+      "entryFile": "main",
+      "sourceRoot": "apps/facilities/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/facilities/tsconfig.app.json"
+      }
+    },
     "gateway": {
       "type": "application",
       "root": "apps/gateway",

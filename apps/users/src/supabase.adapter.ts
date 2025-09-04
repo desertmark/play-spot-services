@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
-import { Settings } from './settings';
 import { UserProfile, ValidateJwtResponse } from '@app/common/users';
 import type { UpdateUserRequest } from '@app/common/users';
 import { RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
+import { Settings } from '@app/common/settings';
 
 @Injectable()
 export class SupabaseAdapter {
@@ -18,6 +18,12 @@ export class SupabaseAdapter {
   }
 
   async validateJwt(jwt: string): Promise<ValidateJwtResponse> {
+    if (!jwt) {
+      throw new RpcException({
+        code: status.UNAUTHENTICATED,
+        message: 'Missing access token',
+      });
+    }
     try {
       const res = await this.client.auth.getClaims(jwt);
       if (res.error) {

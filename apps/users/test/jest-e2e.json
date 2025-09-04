@@ -13,9 +13,5 @@
     "^apps/users/(.*)$": "<rootDir>/../../../apps/users/$1",
     "^apps/play-spot-services/(.*)$": "<rootDir>/../../../apps/play-spot-services/$1"
   },
-  "roots": [
-    "<rootDir>",
-    "<rootDir>/../../../apps/",
-    "<rootDir>/../../../libs/"
-  ]
+  "roots": ["<rootDir>", "<rootDir>/../../../apps/", "<rootDir>/../../../libs/"]
 }

@@ -17,7 +17,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e": "jest --config ./apps/play-spot-services/test/jest-e2e.json",
     "protoc": "npx protoc -I=./libs/common/proto   --include_imports   --include_source_info   --descriptor_set_out=./protos/users.pb   ./libs/common/proto/users.proto"
   },
   "dependencies": {
@@ -28,6 +28,7 @@
     "@nestjs/microservices": "^11.1.6",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.0",
+    "@prisma/client": "^6.15.0",
     "@supabase/supabase-js": "^2.56.0",
     "@types/lodash": "^4.17.20",
     "class-transformer": "^0.5.1",
@@ -53,6 +54,7 @@
     "globals": "^16.0.0",
     "jest": "^30.0.0",
     "prettier": "^3.4.2",
+    "prisma": "^6.15.0",
     "protoc": "^32.0.0",
     "source-map-support": "^0.5.21",
     "supabase": "^2.39.2",

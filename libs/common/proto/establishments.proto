@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package facilities;
+
+import "google/protobuf/timestamp.proto";
+import "common.proto";
+
+service FacilitiesService {
+  rpc GetEstablishments(GetEstablishmentsRequest) returns (GetEstablishmentsResponse);
+  rpc CreateEstablishment(CreateEstablishmentRequest) returns (Establishment);
+}
+
+message Establishment {
+  int32 id = 1;
+  string owner_id = 2;
+  string name = 3;
+  optional string description = 4;
+  optional string address = 5;
+  optional string city = 6;
+  optional string state = 7;
+  optional string zip_code = 8;
+  string tz = 9;
+  bool active = 10;
+  optional google.protobuf.Timestamp created_at = 11;
+  optional google.protobuf.Timestamp updated_at = 12;
+}
+
+message GetEstablishmentsRequest {
+  optional common.PaginationRequest pagination = 1;
+}
+
+message GetEstablishmentsResponse {
+  repeated Establishment items = 1;
+  int32 total = 2;
+}
+
+message CreateEstablishmentRequest {
+  string name = 1;
+  string description = 2;
+  string address = 3;
+  string city = 4;
+  string state = 5;
+  string zip_code = 6;
+  string tz = 7;
+}
