@@ -3,10 +3,11 @@ import { RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
 import { SupabaseAdapter } from './supabase.adapter';
 import { UserProfile } from '@app/common/users';
+import { ContextService } from '@app/common/users/context.service';
 import { createClient } from '@supabase/supabase-js';
 
 jest.mock('@supabase/supabase-js');
-jest.mock('./settings', () => ({
+jest.mock('@app/common/settings', () => ({
   Settings: {
     supabaseUrl: 'http://localhost:54321',
     supabaseSecretKey: 'test-key',
@@ -16,8 +17,13 @@ jest.mock('./settings', () => ({
 describe('SupabaseAdapter', () => {
   let adapter: SupabaseAdapter;
   let mockClient: any;
+  let mockContextService: jest.Mocked<ContextService>;
 
   beforeEach(async () => {
+    // Set environment variables for tests
+    process.env.SUPABASE_URL = 'http://localhost:54321';
+    process.env.SUPABASE_SECRET_KEY = 'test-key';
+
     mockClient = {
       auth: {
         getClaims: jest.fn(),
@@ -28,10 +34,20 @@ describe('SupabaseAdapter', () => {
       },
     };
 
+    mockContextService = {
+      userId: 'test-user-id',
+    } as any;
+
     (createClient as jest.Mock).mockReturnValue(mockClient);
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SupabaseAdapter],
+      providers: [
+        SupabaseAdapter,
+        {
+          provide: ContextService,
+          useValue: mockContextService,
+        },
+      ],
     }).compile();
 
     adapter = module.get<SupabaseAdapter>(SupabaseAdapter);
@@ -41,6 +57,12 @@ describe('SupabaseAdapter', () => {
       debug: jest.fn(),
       warn: jest.fn(),
     };
+  });
+
+  afterEach(() => {
+    // Clean up environment variables
+    delete process.env.SUPABASE_URL;
+    delete process.env.SUPABASE_SECRET_KEY;
   });
 
   describe('validateJwt', () => {

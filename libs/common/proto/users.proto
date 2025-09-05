@@ -5,7 +5,7 @@ package users;
 service UsersService {
   rpc GetCurrentUser(GetCurrentUserRequest) returns (UserProfile);
   rpc GetUserById(GetUserByIdRquest) returns (UserProfile);
-  rpc UpdateUser(UpdateUserRequest) returns (UserProfile);
+  rpc UpdateProfile(UpdateUserRequest) returns (UserProfile);
   rpc ValidateJwt(ValidateJwtRequest) returns (ValidateJwtResponse);
 }
 

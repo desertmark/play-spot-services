@@ -5,12 +5,13 @@ import type { UpdateUserRequest } from '@app/common/users';
 import { RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
 import { Settings } from '@app/common/settings';
+import { ContextService } from '@app/common/users/context.service';
 
 @Injectable()
 export class SupabaseAdapter {
   private client: SupabaseClient;
   private logger = new Logger(SupabaseAdapter.name);
-  constructor() {
+  constructor(private readonly context: ContextService) {
     this.client = createClient(
       Settings.supabaseUrl,
       Settings.supabaseSecretKey,
@@ -53,7 +54,6 @@ export class SupabaseAdapter {
   }
   @HandleError()
   async updateUser(id: string, user: UpdateUserRequest): Promise<UserProfile> {
-    this.logger.debug(`updateUser: ${JSON.stringify(user)}`);
     const res = await this.client.auth.admin.updateUserById(id, {
       user_metadata: {
         ...user,
@@ -65,13 +65,27 @@ export class SupabaseAdapter {
     return this.toUserProfile(res.data.user);
   }
 
+  @HandleError()
+  async updateProfile(user: UpdateUserRequest): Promise<UserProfile> {
+    const userId = this.context.userId;
+    const res = await this.client.auth.admin.updateUserById(userId!, {
+      user_metadata: {
+        ...user,
+      },
+    });
+    if (res.error) {
+      throw res.error;
+    }
+    return this.toUserProfile(res.data.user);
+  }
+
   private toUserProfile(user: User): UserProfile {
-    const profile = new UserProfile();
-    profile.id = user.id;
-    profile.email = user.email!;
-    profile.firstName = user.user_metadata?.firstName;
-    profile.lastName = user.user_metadata?.lastName;
-    return profile;
+    return UserProfile.fromObject({
+      id: user.id,
+      email: user.email!,
+      firstName: user.user_metadata?.firstName,
+      lastName: user.user_metadata?.lastName,
+    });
   }
 }
 

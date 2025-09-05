@@ -12,7 +12,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { RpcException, type ClientGrpc } from '@nestjs/microservices';
-import { Stats } from 'fs';
 import { firstValueFrom, take } from 'rxjs';
 
 @Injectable()

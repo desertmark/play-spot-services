@@ -1,5 +1,9 @@
 import { status } from '@grpc/grpc-js';
-import { INestMicroservice, ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  INestMicroservice,
+  ValidationPipe,
+} from '@nestjs/common';
 import { NestFactory } from '@nestjs/core/nest-factory';
 import {
   MicroserviceOptions,
@@ -18,6 +22,7 @@ export interface IGrpcMicroserviceOptions {
 const PROTO_BASE_PATH = 'libs/common/proto';
 
 const VALIDATION_PIPE = new ValidationPipe({
+  transform: true,
   exceptionFactory: (errors) => {
     return new RpcException({
       code: status.INVALID_ARGUMENT,
@@ -53,6 +58,9 @@ export class GrpcNestFactory {
       },
     );
     app.useGlobalPipes(VALIDATION_PIPE);
+    app.useGlobalInterceptors(
+      new ClassSerializerInterceptor(app.get('Reflector')),
+    );
     return app;
   }
 }

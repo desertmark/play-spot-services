@@ -13,8 +13,9 @@ describe('UsersGatewayController', () => {
 
   beforeEach(async () => {
     mockUsersService = {
-      GetCurrentUser: jest.fn(),
-      UpdateUser: jest.fn(),
+      GetCurrentUser: jest.fn().mockResolvedValue({} as UserProfile),
+      UpdateUser: jest.fn().mockResolvedValue({} as UserProfile),
+      UpdateProfile: jest.fn().mockResolvedValue({} as UserProfile),
     } as any;
 
     mockClientGrpc = {
@@ -53,13 +54,15 @@ describe('UsersGatewayController', () => {
       const updateRequest = new UpdateUserRequest();
       updateRequest.firstName = 'Jane';
       updateRequest.lastName = 'Doe';
-      const expectedResult = {
+      const expectedResult: UserProfile = {
         id: '1',
         email: 'janedoe@email.com',
         firstName: 'Jane',
         lastName: 'Doe',
       };
-      mockUsersService.GetCurrentUser.mockResolvedValue(expectedResult);
+      (mockUsersService.GetCurrentUser as jest.Mock).mockResolvedValue(
+        expectedResult,
+      );
 
       controller.onModuleInit();
       const result = await controller.getCurrentUser(metadata);
@@ -72,8 +75,8 @@ describe('UsersGatewayController', () => {
     });
   });
 
-  describe('updateUser', () => {
-    it('should call UpdateUser service method', async () => {
+  describe('updateProfile', () => {
+    it('should call UpdateProfile service method', async () => {
       const metadata = new Metadata();
       const updateRequest = new UpdateUserRequest();
       updateRequest.firstName = 'Jane';
@@ -84,12 +87,14 @@ describe('UsersGatewayController', () => {
         firstName: 'Jane',
         lastName: 'Doe',
       };
-      mockUsersService.UpdateUser.mockResolvedValue(expectedResult);
+      (mockUsersService.UpdateProfile as jest.Mock).mockResolvedValue(
+        expectedResult,
+      );
 
       controller.onModuleInit();
-      const result = await controller.updateUser(updateRequest, metadata);
+      const result = await controller.updateProfile(updateRequest, metadata);
 
-      expect(mockUsersService.UpdateUser).toHaveBeenCalledWith(
+      expect(mockUsersService.UpdateProfile).toHaveBeenCalledWith(
         updateRequest,
         metadata,
       );

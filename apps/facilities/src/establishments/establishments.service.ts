@@ -18,11 +18,14 @@ export class EstablishmentsService {
   async findMany({
     pagination,
   }: GetEstablishmentsRequest): Promise<PaginationResponse<Establishment>> {
+    const dbItems = await this.prisma.establishments.findMany({
+      take: pagination?.limit,
+      skip: pagination?.offset,
+    });
+    const items = dbItems?.map((i) => Establishment.fromObject(i));
+    console.log(items[0]?.id);
     return {
-      items: await this.prisma.establishments.findMany({
-        take: pagination?.limit,
-        skip: pagination?.offset,
-      }),
+      items,
       total: await this.prisma.establishments.count(),
     };
   }
@@ -30,6 +33,8 @@ export class EstablishmentsService {
   async create(model: Partial<Establishment>): Promise<Establishment> {
     model.active = true;
     model.owner_id = this.context.userId;
+    model.created_at = new Date();
+    model.updated_at = new Date();
 
     this.logger.debug(`create establishment`, model);
 

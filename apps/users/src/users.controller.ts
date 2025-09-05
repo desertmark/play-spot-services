@@ -1,4 +1,8 @@
-import { Controller } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Controller,
+  UseInterceptors,
+} from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 
 import type { Metadata } from '@grpc/grpc-js';
@@ -12,8 +16,10 @@ import type {
 } from '@app/common/users';
 import { GRPC_USERS_SERVICE } from '@app/common/constants';
 import { SupabaseAdapter } from './supabase.adapter';
+import { Authorized } from './users-auth.guard';
 
 @Controller()
+@Authorized()
 export class UsersController {
   constructor(private readonly supabase: SupabaseAdapter) {}
 
@@ -28,13 +34,9 @@ export class UsersController {
     return this.supabase.getUserById(userId);
   }
 
-  @GrpcMethod(GRPC_USERS_SERVICE, 'UpdateUser')
-  async updateUser(
-    user: UpdateUserRequest,
-    metadata: Metadata,
-  ): Promise<UserProfile> {
-    const userId = metadata.get('userId')[0] as string;
-    return this.supabase.updateUser(userId, user);
+  @GrpcMethod(GRPC_USERS_SERVICE, 'UpdateProfile')
+  async updateProfile(user: UpdateUserRequest): Promise<UserProfile> {
+    return this.supabase.updateProfile(user);
   }
 
   @GrpcMethod(GRPC_USERS_SERVICE, 'ValidateJwt')

@@ -1,6 +1,7 @@
 import { IsOptional } from 'class-validator';
+import { BaseDto } from '../dto';
 
-export class UpdateUserRequest {
+export class UpdateUserRequest extends BaseDto<UpdateUserRequest> {
   @IsOptional()
   firstName?: string;
   @IsOptional()

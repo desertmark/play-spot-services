@@ -1,6 +1,7 @@
 import { Inject, createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { GRPC_USERS_CLIENT } from './constants';
 import { Metadata as GrpcMetadata } from '@grpc/grpc-js';
+import { Transform } from 'class-transformer';
 
 export const InjectUsersClient = () => Inject(GRPC_USERS_CLIENT);
 
@@ -20,3 +21,6 @@ export const CurrentMeta = createParamDecorator(
     return meta;
   },
 );
+
+export const SerializeAsISO = () =>
+  Transform(({ value }) => value?.toISOString(), { toPlainOnly: true });

@@ -1,7 +1,8 @@
-import { IsTimeZone, Min, MinLength } from 'class-validator';
-import { PaginationRequest } from '../dto';
+import { IsTimeZone, MinLength } from 'class-validator';
+import { BaseDto, PaginationRequest } from '../dto';
+import { SerializeAsISO } from '../decorators';
 
-export interface Establishment {
+export class Establishment extends BaseDto<Establishment> {
   id: number;
   owner_id: string;
   name: string;
@@ -12,7 +13,9 @@ export interface Establishment {
   zip_code: string | null;
   tz: string;
   active: boolean;
+  @SerializeAsISO()
   created_at: Date | null;
+  @SerializeAsISO()
   updated_at: Date | null;
 }
 
@@ -20,7 +23,7 @@ export class CreateEstablishmentRequest
   implements
     Omit<
       Establishment,
-      'id' | 'created_at' | 'updated_at' | 'owner_id' | 'active'
+      'id' | 'created_at' | 'updated_at' | 'owner_id' | 'active' | 'fromObject'
     >
 {
   @MinLength(3)
