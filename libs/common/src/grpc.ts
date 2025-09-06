@@ -11,6 +11,10 @@ import {
   Transport,
 } from '@nestjs/microservices';
 import { join } from 'path';
+import { LoggerInterceptor } from './interceptors';
+import { ModuleRef } from '@nestjs/core';
+import { error } from 'console';
+import { ValidationError } from 'class-validator';
 
 type IEntryNestModule = Parameters<typeof NestFactory.createMicroservice>[0];
 export interface IGrpcMicroserviceOptions {
@@ -20,16 +24,40 @@ export interface IGrpcMicroserviceOptions {
 }
 
 const PROTO_BASE_PATH = 'libs/common/proto';
+/**
+ * Serializes validation errors into a readable string.
+ * i.e: `model: name must be longer than or equal to 3 characters, model: surface_type must be one of the following values: artificial_grass, clay, hard, natural_grass, wood`
+ * @param errors
+ * @param parentPath
+ * @returns
+ */
+function serializeValidationErrors(
+  errors: ValidationError[],
+  parentPath: string = '',
+) {
+  return errors
+    .map((error) => {
+      if (error.children?.length) {
+        return serializeValidationErrors(error.children, error.property);
+      }
+      return Object.values(error.constraints || {}).map(
+        (s) => parentPath + ': ' + s,
+      );
+    })
+    .join(', ');
+}
 
 const VALIDATION_PIPE = new ValidationPipe({
-  transform: true,
+  whitelist: true,
+  transform: true, // <- ESTO es lo que hace que plain objects se vuelvan instancias de clase
+  validateCustomDecorators: true,
+  transformOptions: {
+    enableImplicitConversion: true, // <- Ayuda con la conversión de tipos
+  },
   exceptionFactory: (errors) => {
     return new RpcException({
       code: status.INVALID_ARGUMENT,
-      message: errors
-        .map((err) => Object.values(err.constraints || []))
-        .flat()
-        .join(', '),
+      message: serializeValidationErrors(errors),
     });
   },
 });
@@ -59,6 +87,7 @@ export class GrpcNestFactory {
     );
     app.useGlobalPipes(VALIDATION_PIPE);
     app.useGlobalInterceptors(
+      new LoggerInterceptor(app.get(ModuleRef)),
       new ClassSerializerInterceptor(app.get('Reflector')),
     );
     return app;

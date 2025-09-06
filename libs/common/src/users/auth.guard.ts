@@ -44,7 +44,7 @@ export class AuthGuard implements CanActivate {
       (requestOrMetadata as Request)['userId'] = res.userId;
       (requestOrMetadata as Metadata)?.set?.('userId', res.userId);
 
-      this.logger.debug(`Authenticated user ID:`, res);
+      this.logger.debug(`Authenticated user ID:`, res.userId);
 
       return !!res.isValid;
     } catch (error) {

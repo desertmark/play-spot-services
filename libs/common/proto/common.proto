@@ -12,3 +12,9 @@ message PaginationResponse {
   int32 limit = 2;
   int32 offset = 3;
 }
+
+message DeleteEntityRequest {
+  int32 id = 1;
+}
+
+message Empty {}

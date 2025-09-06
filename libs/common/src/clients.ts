@@ -1,6 +1,6 @@
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { GRPC_USERS_CLIENT, GRPC_USERS_PACKAGE } from './constants';
-import { join } from 'path';
+import { Global, Module } from '@nestjs/common';
 
 export const UsersClientModule = ClientsModule.register([
   {

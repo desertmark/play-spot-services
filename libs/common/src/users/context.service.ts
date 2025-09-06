@@ -2,9 +2,11 @@ import { Metadata } from '@grpc/grpc-js';
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { CONTEXT } from '@nestjs/microservices';
 import type { RequestContext, BaseRpcContext } from '@nestjs/microservices';
-
+import { randomUUID } from 'crypto';
 @Injectable({ scope: Scope.REQUEST })
 export class ContextService {
+  public readonly requestId: string = randomUUID();
+
   constructor(
     @Inject(CONTEXT) private reqContext: RequestContext<any, BaseRpcContext>, //BaseRpcContext is forced by nestjs but runtime type is Metadata
   ) {}

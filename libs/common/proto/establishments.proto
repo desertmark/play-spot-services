@@ -2,12 +2,13 @@ syntax = "proto3";
 
 package facilities;
 
-import "google/protobuf/timestamp.proto";
 import "common.proto";
 
-service FacilitiesService {
+service EstablishmentsService {
   rpc GetEstablishments(GetEstablishmentsRequest) returns (GetEstablishmentsResponse);
   rpc CreateEstablishment(CreateEstablishmentRequest) returns (Establishment);
+  rpc UpdateEstablishment(UpdateEstablishmentRequest) returns (Establishment);
+  rpc DeleteEstablishment(UpdateEstablishmentRequest) returns (common.Empty);
 }
 
 message Establishment {
@@ -42,4 +43,9 @@ message CreateEstablishmentRequest {
   string state = 5;
   string zip_code = 6;
   string tz = 7;
+}
+
+message UpdateEstablishmentRequest {
+  int32 id = 1;
+  CreateEstablishmentRequest model = 2;
 }

@@ -1,8 +1,15 @@
-import { IsTimeZone, MinLength } from 'class-validator';
-import { BaseDto, PaginationRequest } from '../dto';
+import {
+  IsDefined,
+  IsPositive,
+  IsTimeZone,
+  MinLength,
+  ValidateNested,
+} from 'class-validator';
+import { BaseDto, IUpsertEntity, PaginationRequest } from '../dto';
 import { SerializeAsISO } from '../decorators';
+import { Type } from 'class-transformer';
 
-export class Establishment extends BaseDto<Establishment> {
+export class Establishment extends BaseDto {
   id: number;
   owner_id: string;
   name: string;
@@ -20,11 +27,7 @@ export class Establishment extends BaseDto<Establishment> {
 }
 
 export class CreateEstablishmentRequest
-  implements
-    Omit<
-      Establishment,
-      'id' | 'created_at' | 'updated_at' | 'owner_id' | 'active' | 'fromObject'
-    >
+  implements IUpsertEntity<Establishment>
 {
   @MinLength(3)
   name: string;
@@ -40,6 +43,15 @@ export class CreateEstablishmentRequest
   zip_code: string;
   @IsTimeZone()
   tz: string;
+}
+
+export class UpdateEstablishmentRequest {
+  @IsDefined()
+  @IsPositive()
+  id: number;
+  @ValidateNested()
+  @Type(() => CreateEstablishmentRequest)
+  model: CreateEstablishmentRequest;
 }
 
 export class GetEstablishmentsRequest {
