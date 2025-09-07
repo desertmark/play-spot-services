@@ -9,6 +9,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 
 export enum UnitType {
   FOOTBALL = 'football',
@@ -45,16 +46,39 @@ export class Unit extends BaseDto {
 export class CreateUnitRequest implements IUpsertEntity<Unit> {
   @IsDefined()
   @IsPositive()
+  @ApiProperty()
   establishment_id: number;
+
   @MinLength(3)
+  @ApiProperty()
   name: string;
+
   @IsEnum(UnitType)
+  @ApiProperty({
+    enum: UnitType,
+    enumName: 'UnitType',
+  })
   type: UnitType;
+
   @IsEnum(SurfaceType)
+  @ApiProperty({
+    enum: SurfaceType,
+    enumName: 'SurfaceType',
+    required: false,
+  })
   surface_type: SurfaceType | null;
+
+  @Type(() => Boolean)
+  @ApiProperty()
   indoor: boolean;
+
   @IsOptional()
   @IsPositive()
+  @Type(() => Number)
+  @ApiProperty({
+    type: Number,
+    required: false,
+  })
   capacity: number | null;
 }
 
@@ -67,5 +91,8 @@ export class UpdateUnitRequest extends BaseDto {
   model: CreateUnitRequest;
 }
 export class GetUnitsRequest {
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => PaginationRequest)
   pagination?: PaginationRequest;
 }

@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { IsDefined, IsOptional, IsPositive, Min } from 'class-validator';
 
 export class BaseDto {
@@ -23,9 +25,14 @@ export type IUpsertEntity<T, K extends keyof any = ''> = Omit<
 export class PaginationRequest {
   @IsOptional()
   @IsPositive()
+  @Type(() => Number)
+  @ApiProperty({ name: 'limit', required: false })
   limit?: number;
+
   @IsOptional()
   @Min(0)
+  @Type(() => Number)
+  @ApiProperty({ name: 'offset', required: false })
   offset?: number;
 }
 

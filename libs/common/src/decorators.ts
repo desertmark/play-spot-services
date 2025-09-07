@@ -1,9 +1,10 @@
 import { Inject, createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { GRPC_USERS_CLIENT } from './constants';
+import { GRPC_USERS_CLIENT, GRPC_FACILITIES_CLIENT } from './constants';
 import { Metadata as GrpcMetadata } from '@grpc/grpc-js';
 import { Transform } from 'class-transformer';
 
 export const InjectUsersClient = () => Inject(GRPC_USERS_CLIENT);
+export const InjectFacilitiesClient = () => Inject(GRPC_FACILITIES_CLIENT);
 
 export const CurrentUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
