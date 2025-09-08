@@ -6,7 +6,7 @@ async function bootstrap() {
   const app = await GrpcNestFactory.createGrpcMicroservice({
     module: FacilitiesModule,
     packageName: GRPC_FACILITIES_PACKAGE,
-    protos: ['establishments.proto', 'units.proto'],
+    protos: ['establishments.proto', 'units.proto', 'slots.proto'],
   });
   await app.listen();
 }

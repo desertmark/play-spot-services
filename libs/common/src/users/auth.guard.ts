@@ -26,15 +26,16 @@ export class AuthGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    return true;
     let authHeader: string | undefined;
     let requestOrMetadata: Request | Metadata;
     if (context.getType() == 'rpc') {
       requestOrMetadata = context.switchToRpc().getContext<Metadata>();
-      authHeader = requestOrMetadata.get('authorization')?.[0]?.toString();
+      authHeader = (requestOrMetadata as Metadata)
+        .get('authorization')?.[0]
+        ?.toString();
     } else {
       requestOrMetadata = context.switchToHttp().getRequest<Request>();
-      authHeader = requestOrMetadata.headers?.['authorization'];
+      authHeader = (requestOrMetadata as Request).headers?.['authorization'];
     }
     try {
       const jwt = authHeader?.split(' ')[1]!;

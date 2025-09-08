@@ -45,8 +45,7 @@ CREATE TABLE IF NOT EXISTS facilities.slots (
     active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
-    CHECK (open_time < close_time),
-    UNIQUE (unit_id, day_of_week)
+    CHECK (open_time < close_time)
 );
 
 -- ================================

@@ -6,3 +6,4 @@ export const GRPC_FACILITIES_CLIENT = 'GRPC_FACILITIES_CLIENT';
 export const GRPC_FACILITIES_PACKAGE = 'facilities';
 export const GRPC_ESTABLISHMENTS_SERVICE = 'EstablishmentsService';
 export const GRPC_UNITS_SERVICE = 'UnitsService';
+export const GRPC_SLOTS_SERVICE = 'SlotsService';

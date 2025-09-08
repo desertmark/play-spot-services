@@ -3,6 +3,7 @@ import { GatewayController } from './gateway.controller';
 import { UsersGatewayController } from './users-gateway.controller';
 import { EstablishmentsGatewayController } from './establishments-gateway.controller';
 import { UnitsGatewayController } from './units-gateway.controller';
+import { SlotsGatewayController } from './slots-gateway.controller';
 import { ClientsModules } from '@app/common/clients';
 
 @Module({
@@ -12,6 +13,7 @@ import { ClientsModules } from '@app/common/clients';
     UsersGatewayController,
     EstablishmentsGatewayController,
     UnitsGatewayController,
+    SlotsGatewayController,
   ],
   providers: [],
 })

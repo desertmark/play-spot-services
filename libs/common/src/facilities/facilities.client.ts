@@ -12,6 +12,12 @@ import {
   UpdateUnitRequest,
   Unit,
 } from './units.dto';
+import {
+  CreateSlotRequest,
+  GetSlotsRequest,
+  UpdateSlotRequest,
+  Slot,
+} from './slots.dto';
 import { PaginationResponse } from '../dto';
 
 export interface IEstablishmentsClient {
@@ -41,4 +47,14 @@ export interface IUnitsClient {
   CreateUnit(data: CreateUnitRequest, metadata?: Metadata): Observable<Unit>;
   UpdateUnit(data: UpdateUnitRequest, metadata?: Metadata): Observable<Unit>;
   DeleteUnit(data: { id: number }, metadata?: Metadata): Observable<void>;
+}
+
+export interface ISlotsClient {
+  GetSlots(
+    data: GetSlotsRequest,
+    metadata?: Metadata,
+  ): Observable<PaginationResponse<Slot>>;
+  CreateSlot(data: CreateSlotRequest, metadata?: Metadata): Observable<Slot>;
+  UpdateSlot(data: UpdateSlotRequest, metadata?: Metadata): Observable<Slot>;
+  DeleteSlot(data: { id: number }, metadata?: Metadata): Observable<void>;
 }

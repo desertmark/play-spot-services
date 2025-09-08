@@ -28,6 +28,7 @@ export const FacilitiesClientModule = ClientsModule.register([
       protoPath: [
         'libs/common/proto/establishments.proto',
         'libs/common/proto/units.proto',
+        'libs/common/proto/slots.proto',
       ],
       url: process.env.FACILITIES_URL,
     },

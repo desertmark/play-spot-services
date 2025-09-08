@@ -8,7 +8,7 @@ import {
   UpdateEstablishmentRequest,
 } from '@app/common/facilities';
 import { Authorized } from '@app/common/users/auth.guard';
-import { DeleteEntitytRequest, UpdateEntityRequest } from '@app/common/dto';
+import { DeleteEntitytRequest } from '@app/common/dto';
 
 @Controller()
 @Authorized()

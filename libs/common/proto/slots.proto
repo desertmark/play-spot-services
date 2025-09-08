@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package facilities;
+
+import "common.proto";
+
+service SlotsService {
+  rpc GetSlots(GetSlotsRequest) returns (GetSlotsResponse);
+  rpc CreateSlot(CreateSlotRequest) returns (Slot);
+  rpc UpdateSlot(UpdateSlotRequest) returns (Slot);
+  rpc DeleteSlot(UpdateSlotRequest) returns (common.Empty);
+}
+
+message Slot {
+  int32 id = 1;
+  int32 unit_id = 2;
+  int32 day_of_week = 3;
+  string open_time = 4;
+  string close_time = 5;
+  bool active = 6;
+  optional string created_at = 7;
+  optional string updated_at = 8;
+}
+
+message GetSlotsRequest {
+  optional common.PaginationRequest pagination = 1;
+  optional int32 unit_id = 2;
+  optional int32 day_of_week = 3;
+}
+
+message GetSlotsResponse {
+  repeated Slot items = 1;
+  int32 total = 2;
+}
+
+message CreateSlotRequest {
+  int32 unit_id = 1;
+  int32 day_of_week = 2;
+  string open_time = 3;
+  string close_time = 4;
+}
+
+message UpdateSlotRequest {
+  int32 id = 1;
+  CreateSlotRequest model = 2;
+}
