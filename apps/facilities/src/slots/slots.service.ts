@@ -27,18 +27,20 @@ export class SlotsService {
       where.unit_id = unit_id;
     }
 
-    if (day_of_week !== undefined) {
+    if (day_of_week !== undefined && day_of_week !== null) {
       where.day_of_week = day_of_week;
     }
 
     const dbItems = await this.prisma.slots.findMany({
       take: pagination?.limit,
       skip: pagination?.offset,
-      orderBy: [{ unit_id: 'asc' }, { day_of_week: 'asc' }],
+      orderBy: [{ id: 'asc' }],
       where,
     });
 
-    const items = dbItems?.map((i) => Slot.fromObject(i));
+    const items = dbItems?.map((i) =>
+      Slot.fromObject(SlotUtil.toStringSlot(i)),
+    );
     return {
       items,
       total: await this.prisma.slots.count({ where }),
@@ -59,20 +61,13 @@ export class SlotsService {
     }
 
     // Check for existing slot with same unit_id and day_of_week
-    const existingSlot = await this.prisma.slots.findFirst({
-      where: {
-        unit_id: model.unit_id,
-        day_of_week: model.day_of_week,
-      },
-    });
+    const overlappingSlots = await this.findOverlappingSlots(model as Slot);
 
-    if (existingSlot) {
-      if (SlotUtil.isOverlapping(model as ISlot, existingSlot)) {
-        throw new RpcException({
-          code: status.INVALID_ARGUMENT,
-          message: `An overlapping slot already exists for unit ${model.unit_id}, ${SlotUtil.toPrintString(SlotUtil.toStringSlot(existingSlot))}`,
-        });
-      }
+    if (overlappingSlots?.length) {
+      throw new RpcException({
+        code: status.INVALID_ARGUMENT,
+        message: `Overlapping slot already exists for unit ${model.unit_id}, ${overlappingSlots.map((s) => SlotUtil.toPrintString(s)).join('; ')}`,
+      });
     }
 
     model.active = true;
@@ -89,11 +84,11 @@ export class SlotsService {
   async update(id: number, model: Partial<Slot>): Promise<Slot> {
     this.logger.debug('Update slot', id, model);
 
-    const slot = await this.prisma.slots.findFirst({
+    const dbSlot = await this.prisma.slots.findFirst({
       where: { id },
     });
 
-    if (!slot) {
+    if (!dbSlot) {
       throw new RpcException({
         code: status.NOT_FOUND,
         message: `Slot: ${id} not found`,
@@ -101,7 +96,7 @@ export class SlotsService {
     }
 
     // Validate unit exists if unit_id is being updated
-    if (model.unit_id && model.unit_id !== slot.unit_id) {
+    if (model.unit_id && model.unit_id !== dbSlot.unit_id) {
       const unitExists = await this.prisma.units.count({
         where: { id: model.unit_id },
       });
@@ -113,51 +108,28 @@ export class SlotsService {
         });
       }
     }
-
-    // Validate time logic
-    const openTime = model.open_time || slot.open_time;
-    const closeTime = model.close_time || slot.close_time;
-
-    if (openTime >= closeTime) {
-      throw new RpcException({
-        code: status.INVALID_ARGUMENT,
-        message: 'open_time must be before close_time',
-      });
-    }
-
-    // Check for conflicts with existing slots (excluding current slot)
-    if (model.unit_id || model.day_of_week !== undefined) {
-      const unitId = model.unit_id || slot.unit_id;
-      const dayOfWeek =
-        model.day_of_week !== undefined ? model.day_of_week : slot.day_of_week;
-
-      const existingSlot = await this.prisma.slots.findFirst({
-        where: {
-          unit_id: unitId,
-          day_of_week: dayOfWeek,
-          id: { not: id },
-        },
-      });
-
-      if (existingSlot) {
-        throw new RpcException({
-          code: status.ALREADY_EXISTS,
-          message: `Slot already exists for unit ${unitId} on day ${dayOfWeek}`,
-        });
-      }
-    }
-
-    Object.assign(slot, {
-      ...model,
+    // Merge existing slot data with updates
+    const updatedSlot = Object.assign(dbSlot, {
+      ...SlotUtil.toDateSlot(model as ISlot),
       updated_at: new Date(),
     });
+    // Check for conflicts with existing slots (excluding current slot)
+    const overlappingSlots = await this.findOverlappingSlots(
+      SlotUtil.toStringSlot(dbSlot),
+    );
 
-    const updated = await this.prisma.slots.update({
-      data: slot,
+    if (overlappingSlots?.length) {
+      throw new RpcException({
+        code: status.ALREADY_EXISTS,
+        message: `Overlapping slot already exists for unit ${updatedSlot.unit_id}: ${overlappingSlots.map((s) => SlotUtil.toPrintString(s)).join('; ')}`,
+      });
+    }
+
+    const dbUpdated = await this.prisma.slots.update({
+      data: updatedSlot,
       where: { id },
     });
-
-    return Slot.fromObject(updated);
+    return Slot.fromObject(SlotUtil.toStringSlot(dbUpdated));
   }
 
   async delete(id: number) {
@@ -170,5 +142,28 @@ export class SlotsService {
       }
       throw error;
     }
+  }
+
+  private async findOverlappingSlots({
+    id,
+    unit_id,
+    day_of_week,
+    open_time,
+    close_time,
+  }: Slot): Promise<Slot[]> {
+    const dbSlots = await this.prisma.slots.findMany({
+      where: {
+        id: id ? { not: id } : undefined,
+        unit_id: unit_id,
+        day_of_week: day_of_week,
+        open_time: {
+          lt: SlotUtil.timeStringToDate(close_time!),
+        },
+        close_time: {
+          gt: SlotUtil.timeStringToDate(open_time!),
+        },
+      },
+    });
+    return dbSlots.map((s) => Slot.fromObject(SlotUtil.toStringSlot(s)));
   }
 }

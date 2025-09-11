@@ -34,16 +34,17 @@ const PROTO_BASE_PATH = 'libs/common/proto';
 function serializeValidationErrors(
   errors: ValidationError[],
   parentPath: string = '',
-) {
+): string {
   return errors
     .map((error) => {
       if (error.children?.length) {
         return serializeValidationErrors(error.children, error.property);
       }
-      return Object.values(error.constraints || {}).map(
-        (s) => parentPath + ': ' + s,
+      return Object.values(error.constraints || {}).map((s) =>
+        parentPath ? `${parentPath}: ${s}` : s,
       );
     })
+    .flat()
     .join(', ');
 }
 
