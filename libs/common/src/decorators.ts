@@ -1,5 +1,9 @@
 import { Inject, createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { GRPC_USERS_CLIENT, GRPC_FACILITIES_CLIENT } from './constants';
+import {
+  GRPC_USERS_CLIENT,
+  GRPC_FACILITIES_CLIENT,
+  GRPC_RESERVATIONS_CLIENT,
+} from './constants';
 import { Metadata as GrpcMetadata } from '@grpc/grpc-js';
 import { Transform } from 'class-transformer';
 import {
@@ -14,6 +18,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export const InjectUsersClient = () => Inject(GRPC_USERS_CLIENT);
 export const InjectFacilitiesClient = () => Inject(GRPC_FACILITIES_CLIENT);
+export const InjectReservationsClient = () => Inject(GRPC_RESERVATIONS_CLIENT);
 
 export const CurrentUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
@@ -95,6 +100,26 @@ export const IsAfterTime = ({
         defaultMessage(args: ValidationArguments) {
           const [targetField] = args.constraints;
           return `${args.property} must be after ${targetField}`;
+        },
+      },
+    });
+  };
+};
+
+export const IsFutureDate = (): PropertyDecorator => {
+  return function (target: Object, propertyKey: string) {
+    registerDecorator({
+      name: 'isFutureDate',
+      target: target.constructor,
+      propertyName: propertyKey,
+      constraints: [],
+      validator: {
+        validate(value: Date, args: ValidationArguments) {
+          const justNow = new Date().setSeconds(0, 0);
+          return value?.getTime() >= justNow;
+        },
+        defaultMessage(args: ValidationArguments) {
+          return 'Must be a future date';
         },
       },
     });

@@ -1,3 +1,4 @@
+import { Slot } from './facilities';
 import { SlotUtil, ISlot } from './utils';
 
 describe('SlotUtil', () => {
@@ -133,6 +134,177 @@ describe('SlotUtil', () => {
       expect(SlotUtil.isOverlapping(slotWithDates, otherSlotWithDates)).toBe(
         true,
       );
+    });
+  });
+  describe('areAllSlotsOfTheSameUnit', () => {
+    it('Should return true if all slots belong to the same unit', () => {
+      const slots: Partial<Slot>[] = [
+        {
+          unit_id: 1,
+          day_of_week: 1,
+          open_time: '09:00',
+          close_time: '17:00',
+        },
+        {
+          unit_id: 1,
+          day_of_week: 2,
+          open_time: '10:00',
+          close_time: '16:00',
+        },
+        {
+          unit_id: 1,
+          day_of_week: 3,
+          open_time: '08:00',
+          close_time: '18:00',
+        },
+      ];
+      expect(SlotUtil.areAllSlotsOfTheSameUnit(slots as Slot[])).toBe(true);
+    });
+    it('Should return false if slots belong to different units', () => {
+      const slots: Partial<Slot>[] = [
+        {
+          unit_id: 1,
+          day_of_week: 1,
+          open_time: '09:00',
+          close_time: '17:00',
+        },
+        {
+          unit_id: 2,
+          day_of_week: 2,
+          open_time: '10:00',
+          close_time: '16:00',
+        },
+        {
+          unit_id: 1,
+          day_of_week: 3,
+          open_time: '08:00',
+          close_time: '18:00',
+        },
+      ];
+      expect(SlotUtil.areAllSlotsOfTheSameUnit(slots as Slot[])).toBe(false);
+    });
+  });
+
+  describe('areAllSlotsOfTheSameWeekDay', () => {
+    it('Should return true if all slots belong to the same week day', () => {
+      const slots: Partial<Slot>[] = [
+        {
+          unit_id: 1,
+          day_of_week: 1,
+          open_time: '09:00',
+          close_time: '17:00',
+        },
+        {
+          unit_id: 2,
+          day_of_week: 1,
+          open_time: '10:00',
+          close_time: '16:00',
+        },
+        {
+          unit_id: 1,
+          day_of_week: 1,
+          open_time: '08:00',
+          close_time: '18:00',
+        },
+      ];
+      expect(SlotUtil.areAllSlotsOfTheSameWeekDay(slots as Slot[])).toBe(true);
+    });
+    it('Should return false if slots belong to different week days', () => {
+      const slots: Partial<Slot>[] = [
+        {
+          unit_id: 1,
+          day_of_week: 1,
+          open_time: '09:00',
+          close_time: '17:00',
+        },
+        {
+          unit_id: 2,
+          day_of_week: 2,
+          open_time: '10:00',
+          close_time: '16:00',
+        },
+        {
+          unit_id: 1,
+          day_of_week: 1,
+          open_time: '08:00',
+          close_time: '18:00',
+        },
+      ];
+      expect(SlotUtil.areAllSlotsOfTheSameWeekDay(slots as Slot[])).toBe(false);
+    });
+  });
+
+  describe('areAllSlotsContiguousInTime', () => {
+    it('Should return true if all slots are contiguous in time', () => {
+      const slots: Partial<Slot>[] = [
+        {
+          unit_id: 1,
+          day_of_week: 1,
+          open_time: '09:00',
+          close_time: '10:00',
+        },
+        {
+          unit_id: 2,
+          day_of_week: 2,
+          open_time: '10:00',
+          close_time: '11:00',
+        },
+        {
+          unit_id: 1,
+          day_of_week: 1,
+          open_time: '11:00',
+          close_time: '12:00',
+        },
+      ];
+      expect(SlotUtil.areAllSlotsContiguousInTime(slots as Slot[])).toBe(true);
+    });
+
+    it('Should return false if slots have gaps in between', () => {
+      const slots: Partial<Slot>[] = [
+        {
+          unit_id: 1,
+          day_of_week: 1,
+          open_time: '09:00',
+          close_time: '10:00',
+        },
+        {
+          unit_id: 2,
+          day_of_week: 2,
+          open_time: '11:00',
+          close_time: '12:00',
+        },
+        {
+          unit_id: 1,
+          day_of_week: 1,
+          open_time: '13:00',
+          close_time: '14:00',
+        },
+      ];
+      expect(SlotUtil.areAllSlotsContiguousInTime(slots as Slot[])).toBe(false);
+    });
+
+    it('Should return false if slots overlap each other', () => {
+      const slots: Partial<Slot>[] = [
+        {
+          unit_id: 1,
+          day_of_week: 1,
+          open_time: '09:00',
+          close_time: '11:30',
+        },
+        {
+          unit_id: 2,
+          day_of_week: 2,
+          open_time: '11:00',
+          close_time: '12:00',
+        },
+        {
+          unit_id: 1,
+          day_of_week: 1,
+          open_time: '13:00',
+          close_time: '14:00',
+        },
+      ];
+      expect(SlotUtil.areAllSlotsContiguousInTime(slots as Slot[])).toBe(false);
     });
   });
 });

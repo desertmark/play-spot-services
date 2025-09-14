@@ -8,7 +8,7 @@ service SlotsService {
   rpc GetSlots(GetSlotsRequest) returns (GetSlotsResponse);
   rpc CreateSlot(CreateSlotRequest) returns (Slot);
   rpc UpdateSlot(UpdateSlotRequest) returns (Slot);
-  rpc DeleteSlot(UpdateSlotRequest) returns (common.Empty);
+  rpc DeleteSlot(common.DeleteEntityRequest) returns (common.Empty);
 }
 
 message Slot {
@@ -26,6 +26,7 @@ message GetSlotsRequest {
   optional common.PaginationRequest pagination = 1;
   optional int32 unit_id = 2;
   optional int32 day_of_week = 3;
+  repeated int32 ids = 4;
 }
 
 message GetSlotsResponse {

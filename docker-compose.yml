@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  reservations:
+    image: node:22-alpine
+    container_name: reservations
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - '50054:50051'
+    command: sh -c "npx nest start reservations --watch"
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
   facilities:
     image: node:22-alpine
     container_name: facilities

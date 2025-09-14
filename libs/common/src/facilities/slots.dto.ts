@@ -12,6 +12,9 @@ import {
   IsPositive,
   ValidateNested,
   IsString,
+  IsArray,
+  IsIn,
+  IsInt,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
@@ -74,6 +77,11 @@ export class UpdateSlotRequest extends BaseDto {
 }
 
 export class GetSlotsRequest {
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  ids: number[];
+
   @IsOptional()
   @ValidateNested()
   @Type(() => PaginationRequest)

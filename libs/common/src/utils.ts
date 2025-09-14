@@ -9,6 +9,12 @@ export type ISlot = {
   day_of_week: Slot['day_of_week'];
 };
 
+export type IDateSlot = {
+  open_time: Date;
+  close_time: Date;
+  day_of_week: Slot['day_of_week'];
+};
+
 export class SlotUtil {
   static toDateSlot<T extends ISlot>(slot: ISlot): T {
     const clone = cloneInstance(slot);
@@ -79,6 +85,26 @@ export class SlotUtil {
 
   static toPrintString({ id, open_time, close_time, day_of_week }: Slot) {
     return `Slot: ${id} - day: ${DayOfWeek[day_of_week!]} - ${open_time} - ${close_time}`;
+  }
+
+  static areAllSlotsOfTheSameUnit(slots: Slot[]): boolean {
+    return slots.every((slot) => slot.unit_id === slots[0].unit_id);
+  }
+  static areAllSlotsOfTheSameWeekDay(slots: Slot[]): boolean {
+    return slots.every((slot) => slot.day_of_week === slots[0].day_of_week);
+  }
+  static areAllSlotsContiguousInTime(slots: Slot[]): boolean {
+    return slots
+      .map((s) => SlotUtil.toDateSlot<IDateSlot>(s))
+      .sort((a, b) => a.open_time.getTime() - b.open_time.getTime())
+      .reduce((acc, slot, ix, sorted) => {
+        if (sorted[ix + 1]) {
+          const areContiguous =
+            slot.close_time.getTime() === sorted[ix + 1].open_time.getTime();
+          return acc && areContiguous;
+        }
+        return acc;
+      }, true);
   }
 }
 

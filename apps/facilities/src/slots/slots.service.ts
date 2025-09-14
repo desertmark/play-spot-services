@@ -1,7 +1,6 @@
-import { DayOfWeek, PaginationResponse } from '@app/common/dto';
+import { PaginationResponse } from '@app/common/dto';
 import { GetSlotsRequest, Slot } from '@app/common/facilities/slots.dto';
 import { PrismaService } from '@app/common/prisma';
-import { ContextService } from '@app/common/users/context.service';
 import { ISlot, SlotUtil } from '@app/common/utils';
 import { status } from '@grpc/grpc-js';
 import { Injectable, Logger } from '@nestjs/common';
@@ -11,17 +10,21 @@ import { RpcException } from '@nestjs/microservices';
 export class SlotsService {
   private logger = new Logger(SlotsService.name);
 
-  constructor(
-    private readonly prisma: PrismaService,
-    private context: ContextService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async findMany({
     pagination,
     unit_id,
     day_of_week,
+    ids,
   }: GetSlotsRequest): Promise<PaginationResponse<Slot>> {
     const where: any = {};
+
+    if (ids?.length) {
+      where.id = {
+        in: ids,
+      };
+    }
 
     if (unit_id) {
       where.unit_id = unit_id;

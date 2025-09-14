@@ -5,7 +5,6 @@ import {
   GRPC_FACILITIES_CLIENT,
   GRPC_FACILITIES_PACKAGE,
 } from './constants';
-import { Global, Module } from '@nestjs/common';
 
 export const UsersClientModule = ClientsModule.register([
   {
