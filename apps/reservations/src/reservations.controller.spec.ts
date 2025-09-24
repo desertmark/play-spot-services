@@ -103,4 +103,29 @@ describe('ReservationsController', () => {
       expect(result).toBeUndefined();
     });
   });
+
+  describe('getReservations', () => {
+    it('should return a list of reservations', async () => {
+      const getRequest = { userId: 'test-user-id' };
+
+      const mockReservations = [
+        {
+          id: 1,
+          slotIds: [1, 2],
+          reservationDate: '2023-12-01',
+          userId: 'test-user-id',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ];
+
+      jest
+        .spyOn(reservationsController['reservationsService'], 'findMany')
+        .mockResolvedValue({ items: mockReservations, total: 1 });
+
+      const result = await reservationsController.getReservations(getRequest);
+
+      expect(result).toEqual({ items: mockReservations, total: 1 });
+    });
+  });
 });
