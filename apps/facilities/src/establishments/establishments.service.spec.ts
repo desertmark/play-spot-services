@@ -145,17 +145,17 @@ describe('EstablishmentsService', () => {
         address: '456 New St',
         city: 'New City',
         state: 'New State',
-        zip_code: '67890',
+        zipCode: '67890',
         tz: 'America/Los_Angeles',
       };
 
       const mockCreatedEstablishment = {
         id: 1,
         ...establishmentData,
-        owner_id: 'user-123',
+        ownerId: 'user-123',
         active: true,
-        created_at: expect.any(Date),
-        updated_at: expect.any(Date),
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
       };
 
       mockPrismaService.establishments.create.mockResolvedValue(
@@ -167,16 +167,16 @@ describe('EstablishmentsService', () => {
       expect(prismaService.establishments.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
           ...establishmentData,
-          owner_id: 'user-123',
+          ownerId: 'user-123',
           active: true,
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
         }),
       });
       expect(result).toEqual(mockCreatedEstablishment);
     });
 
-    it('should set owner_id from context service', async () => {
+    it('should set ownerId from context service', async () => {
       const establishmentData: Partial<Establishment> = {
         name: 'Test Establishment',
       };
@@ -184,10 +184,10 @@ describe('EstablishmentsService', () => {
       const mockCreatedEstablishment = {
         id: 1,
         ...establishmentData,
-        owner_id: 'user-123',
+        ownerId: 'user-123',
         active: true,
-        created_at: expect.any(Date),
-        updated_at: expect.any(Date),
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
       };
 
       mockPrismaService.establishments.create.mockResolvedValue(
@@ -198,7 +198,7 @@ describe('EstablishmentsService', () => {
 
       expect(prismaService.establishments.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
-          owner_id: 'user-123',
+          ownerId: 'user-123',
         }),
       });
     });
@@ -212,10 +212,10 @@ describe('EstablishmentsService', () => {
       const mockCreatedEstablishment = {
         id: 1,
         ...establishmentData,
-        owner_id: 'user-123',
+        ownerId: 'user-123',
         active: true,
-        created_at: expect.any(Date),
-        updated_at: expect.any(Date),
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
       };
 
       mockPrismaService.establishments.create.mockResolvedValue(
@@ -316,7 +316,7 @@ describe('EstablishmentsService', () => {
       expect(prismaService.establishments.update).not.toHaveBeenCalled();
     });
 
-    it('should update the updated_at timestamp', async () => {
+    it('should update the updatedAt timestamp', async () => {
       const establishmentId = 1;
       const updateData: Partial<Establishment> = {
         name: 'Updated Establishment',
@@ -324,23 +324,23 @@ describe('EstablishmentsService', () => {
 
       const existingEstablishment = {
         id: establishmentId,
-        owner_id: 'user-123',
+        ownerId: 'user-123',
         name: 'Original Establishment',
         description: 'Original Description',
         address: '123 Test St',
         city: 'Test City',
         state: 'Test State',
-        zip_code: '12345',
+        zipCode: '12345',
         tz: 'America/New_York',
         active: true,
-        created_at: new Date('2023-01-01'),
-        updated_at: new Date('2023-01-01'),
+        createdAt: new Date('2023-01-01'),
+        updatedAt: new Date('2023-01-01'),
       };
 
       const updatedEstablishment = {
         ...existingEstablishment,
         ...updateData,
-        updated_at: new Date(),
+        updatedAt: new Date(),
       };
 
       mockPrismaService.establishments.findFirst.mockResolvedValue(
@@ -357,7 +357,7 @@ describe('EstablishmentsService', () => {
 
       expect(prismaService.establishments.update).toHaveBeenCalledWith({
         data: expect.objectContaining({
-          updated_at: now,
+          updatedAt: now,
         }),
         where: { id: establishmentId },
       });

@@ -14,8 +14,8 @@ export class SlotsService {
 
   async findMany({
     pagination,
-    unit_id,
-    day_of_week,
+    unitId,
+    dayOfWeek,
     ids,
   }: GetSlotsRequest): Promise<PaginationResponse<Slot>> {
     const where: any = {};
@@ -26,12 +26,12 @@ export class SlotsService {
       };
     }
 
-    if (unit_id) {
-      where.unit_id = unit_id;
+    if (unitId) {
+      where.unitId = unitId;
     }
 
-    if (day_of_week !== undefined && day_of_week !== null) {
-      where.day_of_week = day_of_week;
+    if (dayOfWeek !== undefined && dayOfWeek !== null) {
+      where.dayOfWeek = dayOfWeek;
     }
 
     const dbItems = await this.prisma.slots.findMany({
@@ -53,29 +53,29 @@ export class SlotsService {
   async create(model: Partial<Slot>): Promise<Slot> {
     // Validate that unit exists
     const unitExists = await this.prisma.units.count({
-      where: { id: model.unit_id },
+      where: { id: model.unitId },
     });
 
     if (!unitExists) {
       throw new RpcException({
         code: status.NOT_FOUND,
-        message: `Unit: ${model.unit_id} not found.`,
+        message: `Unit: ${model.unitId} not found.`,
       });
     }
 
-    // Check for existing slot with same unit_id and day_of_week
+    // Check for existing slot with same unitId and dayOfWeek
     const overlappingSlots = await this.findOverlappingSlots(model as Slot);
 
     if (overlappingSlots?.length) {
       throw new RpcException({
         code: status.INVALID_ARGUMENT,
-        message: `Overlapping slot already exists for unit ${model.unit_id}, ${overlappingSlots.map((s) => SlotUtil.toPrintString(s)).join('; ')}`,
+        message: `Overlapping slot already exists for unit ${model.unitId}, ${overlappingSlots.map((s) => SlotUtil.toPrintString(s)).join('; ')}`,
       });
     }
 
     model.active = true;
-    model.created_at = new Date();
-    model.updated_at = new Date();
+    model.createdAt = new Date();
+    model.updatedAt = new Date();
 
     const created = await this.prisma.slots.create({
       data: SlotUtil.toDateSlot<Slot>(model as ISlot),
@@ -98,23 +98,23 @@ export class SlotsService {
       });
     }
 
-    // Validate unit exists if unit_id is being updated
-    if (model.unit_id && model.unit_id !== dbSlot.unit_id) {
+    // Validate unit exists if unitId is being updated
+    if (model.unitId && model.unitId !== dbSlot.unitId) {
       const unitExists = await this.prisma.units.count({
-        where: { id: model.unit_id },
+        where: { id: model.unitId },
       });
 
       if (!unitExists) {
         throw new RpcException({
           code: status.NOT_FOUND,
-          message: `Unit: ${model.unit_id} not found.`,
+          message: `Unit: ${model.unitId} not found.`,
         });
       }
     }
     // Merge existing slot data with updates
     const updatedSlot = Object.assign(dbSlot, {
       ...SlotUtil.toDateSlot(model as ISlot),
-      updated_at: new Date(),
+      updatedAt: new Date(),
     });
     // Check for conflicts with existing slots (excluding current slot)
     const overlappingSlots = await this.findOverlappingSlots(
@@ -124,7 +124,7 @@ export class SlotsService {
     if (overlappingSlots?.length) {
       throw new RpcException({
         code: status.ALREADY_EXISTS,
-        message: `Overlapping slot already exists for unit ${updatedSlot.unit_id}: ${overlappingSlots.map((s) => SlotUtil.toPrintString(s)).join('; ')}`,
+        message: `Overlapping slot already exists for unit ${updatedSlot.unitId}: ${overlappingSlots.map((s) => SlotUtil.toPrintString(s)).join('; ')}`,
       });
     }
 
@@ -149,21 +149,21 @@ export class SlotsService {
 
   private async findOverlappingSlots({
     id,
-    unit_id,
-    day_of_week,
-    open_time,
-    close_time,
+    unitId,
+    dayOfWeek,
+    openTime,
+    closeTime,
   }: Slot): Promise<Slot[]> {
     const dbSlots = await this.prisma.slots.findMany({
       where: {
         id: id ? { not: id } : undefined,
-        unit_id: unit_id,
-        day_of_week: day_of_week,
-        open_time: {
-          lt: SlotUtil.timeStringToDate(close_time!),
+        unitId: unitId,
+        dayOfWeek: dayOfWeek,
+        openTime: {
+          lt: SlotUtil.timeStringToDate(closeTime!),
         },
-        close_time: {
-          gt: SlotUtil.timeStringToDate(open_time!),
+        closeTime: {
+          gt: SlotUtil.timeStringToDate(openTime!),
         },
       },
     });

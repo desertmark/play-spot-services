@@ -4,6 +4,7 @@ import { ISlotsClient, Slot } from '@app/common/facilities';
 import { PrismaService } from '@app/common/prisma';
 import {
   CreateReservationRequest,
+  GetReservationsRequest,
   Reservation,
   ReservationStatus,
 } from '@app/common/reservations';
@@ -13,7 +14,8 @@ import { Metadata, status } from '@grpc/grpc-js';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { type ClientGrpc, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-
+import type { Prisma } from '@prisma/client';
+import { PaginationResponse } from '@app/common/dto';
 @Injectable()
 export class ReservationsService {
   private slotsService: ISlotsClient;
@@ -27,17 +29,47 @@ export class ReservationsService {
       this.facilities.getService<ISlotsClient>(GRPC_SLOTS_SERVICE);
   }
 
-  async create({ reservation_date, slot_ids }: CreateReservationRequest) {
+  async findMany({
+    userId,
+    reservationDate,
+    status,
+    pagination,
+  }: GetReservationsRequest): Promise<PaginationResponse<Reservation>> {
+    const where: Prisma.reservationsWhereInput = {};
+    if (userId) {
+      where.userId = userId;
+    }
+    if (reservationDate) {
+      where.reservationDate = reservationDate;
+    }
+    if (status) {
+      where.status = status;
+    }
+    const reservations = await this.prisma.reservations.findMany({
+      take: pagination?.limit,
+      skip: pagination?.offset,
+      include: {
+        reservationSlots: true,
+      },
+      where,
+    });
+    return {
+      items: reservations.map((r) => Reservation.fromObject(r)),
+      total: await this.prisma.reservations.count({ where }),
+    };
+  }
+
+  async create({ reservationDate, slotIds }: CreateReservationRequest) {
     this.logger.debug(
-      `Creating reservation for user ${this.context.userId} on ${reservation_date} for slots ${slot_ids}`,
+      `Creating reservation for user ${this.context.userId} on ${reservationDate} for slots ${slotIds}`,
     );
     const count = await this.prisma.reservations.count({
       where: {
-        reservation_date: reservation_date,
+        reservationDate: reservationDate,
         status: ReservationStatus.CONFIRMED,
-        reservation_slots: {
+        reservationSlots: {
           some: {
-            slot_id: { in: slot_ids },
+            slotId: { in: slotIds },
           },
         },
       },
@@ -54,7 +86,7 @@ export class ReservationsService {
     const slots = await firstValueFrom(
       this.slotsService.GetSlots(
         {
-          ids: slot_ids,
+          ids: slotIds,
         },
         meta,
       ),
@@ -69,7 +101,7 @@ export class ReservationsService {
 
     if (
       !SlotUtil.areAllSlotsOfTheSameWeekDay(slots.items) ||
-      slots.items[0].day_of_week !== reservation_date.getDay()
+      slots.items[0].dayOfWeek !== reservationDate.getDay()
     ) {
       throw new RpcException({
         code: status.INVALID_ARGUMENT,
@@ -84,23 +116,25 @@ export class ReservationsService {
       });
     }
 
-    const reservation = this.prisma.reservations.create({
+    const reservation = await this.prisma.reservations.create({
       data: {
-        user_id: this.context.userId!,
-        reservation_date,
+        userId: this.context.userId!,
+        reservationDate,
         status: ReservationStatus.CONFIRMED,
-        reservation_slots: {
-          create: slot_ids.map((slot_id) => ({ slot_id })),
+        reservationSlots: {
+          create: slotIds.map((slotId) => ({ slotId })),
         },
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
       include: {
-        reservation_slots: true,
+        reservationSlots: true,
       },
     });
-
-    return Reservation.fromObject(reservation);
+    return Reservation.fromObject({
+      ...reservation,
+      slots: reservation.reservationSlots,
+    });
   }
 
   async cancel(id: number) {
@@ -119,7 +153,7 @@ export class ReservationsService {
       where: { id },
       data: {
         status: ReservationStatus.CANCELLED,
-        updated_at: new Date(),
+        updatedAt: new Date(),
       },
     });
 

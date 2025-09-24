@@ -21,31 +21,31 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class Slot extends BaseDto {
   id: number;
-  unit_id: number;
+  unitId: number;
   @IsDayOfWeek()
-  day_of_week: DayOfWeek;
+  dayOfWeek: DayOfWeek;
   @IsTime()
-  open_time: string;
+  openTime: string;
   @IsTime()
-  close_time: string;
+  closeTime: string;
   active: boolean;
   @SerializeAsISO()
-  created_at: Date | null;
+  createdAt: Date | null;
   @SerializeAsISO()
-  updated_at: Date | null;
+  updatedAt: Date | null;
 }
 
 export class CreateSlotRequest implements IUpsertEntity<Slot> {
   @IsDefined()
   @IsPositive()
   @ApiProperty()
-  unit_id: number;
+  unitId: number;
 
   @IsDefined()
   @IsDayOfWeek()
   @Type(() => Number)
   @DayOfWeekApiProperty()
-  day_of_week: DayOfWeek;
+  dayOfWeek: DayOfWeek;
 
   @IsDefined()
   @IsString()
@@ -54,7 +54,7 @@ export class CreateSlotRequest implements IUpsertEntity<Slot> {
     example: '08:00',
     description: 'Opening time in HH:MM format',
   })
-  open_time: string;
+  openTime: string;
 
   @IsDefined()
   @IsString()
@@ -63,8 +63,8 @@ export class CreateSlotRequest implements IUpsertEntity<Slot> {
     example: '22:00',
     description: 'Closing time in HH:MM format',
   })
-  @IsAfterTime({ targetField: 'open_time' })
-  close_time: string;
+  @IsAfterTime({ targetField: 'openTime' })
+  closeTime: string;
 }
 
 export class UpdateSlotRequest extends BaseDto {
@@ -78,11 +78,6 @@ export class UpdateSlotRequest extends BaseDto {
 
 export class GetSlotsRequest {
   @IsOptional()
-  @IsArray()
-  @IsInt({ each: true })
-  ids: number[];
-
-  @IsOptional()
   @ValidateNested()
   @Type(() => PaginationRequest)
   pagination?: PaginationRequest;
@@ -92,13 +87,25 @@ export class GetSlotsRequest {
   @Type(() => Number)
   @ApiProperty({
     required: false,
-    description: 'Filter by unit_id',
+    description: 'Filter by unit ID',
   })
-  unit_id?: number;
+  unitId?: number;
 
   @IsOptional()
   @IsDayOfWeek()
   @Type(() => Number)
   @DayOfWeekApiProperty()
-  day_of_week?: DayOfWeek;
+  dayOfWeek?: DayOfWeek;
+
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  @IsPositive({ each: true })
+  @Type(() => Number)
+  @ApiProperty({
+    required: false,
+    type: [Number],
+    description: 'Filter by specific slot IDs',
+  })
+  ids?: number[];
 }

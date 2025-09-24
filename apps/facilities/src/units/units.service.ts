@@ -28,19 +28,19 @@ export class UnitsService {
 
   async create(model: Partial<Unit>): Promise<Unit> {
     const establishmentExists = await this.prisma.establishments.count({
-      where: { id: model.establishment_id },
+      where: { id: model.establishmentId },
     });
 
     if (!establishmentExists) {
       throw new RpcException({
         code: status.NOT_FOUND,
-        message: `Establishment: ${model.establishment_id} not found.`,
+        message: `Establishment: ${model.establishmentId} not found.`,
       });
     }
 
     model.active = true;
-    model.created_at = new Date();
-    model.updated_at = new Date();
+    model.createdAt = new Date();
+    model.updatedAt = new Date();
     const created = await this.prisma.units.create({
       data: model as Unit,
     });
@@ -60,7 +60,7 @@ export class UnitsService {
 
     Object.assign<Unit | any, Partial<Unit>>(unit, {
       ...model,
-      updated_at: new Date(),
+      updatedAt: new Date(),
     });
 
     const updated = await this.prisma.units.update({

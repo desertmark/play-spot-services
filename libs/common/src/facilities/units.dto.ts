@@ -26,28 +26,28 @@ export enum SurfaceType {
 
 export class Unit extends BaseDto {
   id: number;
-  establishment_id: number;
+  establishmentId: number;
   name: string;
   @IsEnum(UnitType)
   type: UnitType;
   @IsEnum(SurfaceType)
-  surface_type: SurfaceType | null;
+  surfaceType: SurfaceType | null;
   indoor: boolean;
   @IsOptional()
   @IsPositive()
   capacity: number | null;
   active: boolean;
   @SerializeAsISO()
-  created_at: Date | null;
+  createdAt: Date | null;
   @SerializeAsISO()
-  updated_at: Date | null;
+  updatedAt: Date | null;
 }
 
 export class CreateUnitRequest implements IUpsertEntity<Unit> {
   @IsDefined()
   @IsPositive()
   @ApiProperty()
-  establishment_id: number;
+  establishmentId: number;
 
   @MinLength(3)
   @ApiProperty()
@@ -66,7 +66,7 @@ export class CreateUnitRequest implements IUpsertEntity<Unit> {
     enumName: 'SurfaceType',
     required: false,
   })
-  surface_type: SurfaceType | null;
+  surfaceType: SurfaceType | null;
 
   @Type(() => Boolean)
   @ApiProperty()

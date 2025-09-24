@@ -13,19 +13,19 @@ service SlotsService {
 
 message Slot {
   int32 id = 1;
-  int32 unit_id = 2;
-  int32 day_of_week = 3;
-  string open_time = 4;
-  string close_time = 5;
+  int32 unitId = 2;
+  int32 dayOfWeek = 3;
+  string openTime = 4;
+  string closeTime = 5;
   bool active = 6;
-  optional string created_at = 7;
-  optional string updated_at = 8;
+  optional string createdAt = 7;
+  optional string updatedAt = 8;
 }
 
 message GetSlotsRequest {
   optional common.PaginationRequest pagination = 1;
-  optional int32 unit_id = 2;
-  optional int32 day_of_week = 3;
+  optional int32 unitId = 2;
+  optional int32 dayOfWeek = 3;
   repeated int32 ids = 4;
 }
 
@@ -35,10 +35,10 @@ message GetSlotsResponse {
 }
 
 message CreateSlotRequest {
-  int32 unit_id = 1;
-  int32 day_of_week = 2;
-  string open_time = 3;
-  string close_time = 4;
+  int32 unitId = 1;
+  int32 dayOfWeek = 2;
+  string openTime = 3;
+  string closeTime = 4;
 }
 
 message UpdateSlotRequest {

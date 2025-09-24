@@ -19,7 +19,7 @@ export class DeleteEntitytRequest {
 
 export type IUpsertEntity<T, K extends keyof any = ''> = Omit<
   T,
-  'id' | 'created_at' | 'updated_at' | 'owner_id' | 'active' | 'fromObject' | K
+  'id' | 'createdAt' | 'updatedAt' | 'ownerId' | 'active' | 'fromObject' | K
 >;
 
 export class PaginationRequest {

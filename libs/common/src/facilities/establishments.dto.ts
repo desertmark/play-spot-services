@@ -13,19 +13,19 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class Establishment extends BaseDto {
   id: number;
-  owner_id: string;
+  ownerId: string;
   name: string;
   description: string | null;
   address: string | null;
   city: string | null;
   state: string | null;
-  zip_code: string | null;
+  zipCode: string | null;
   tz: string;
   active: boolean;
   @SerializeAsISO()
-  created_at: Date | null;
+  createdAt: Date | null;
   @SerializeAsISO()
-  updated_at: Date | null;
+  updatedAt: Date | null;
 }
 
 export class CreateEstablishmentRequest
@@ -53,7 +53,7 @@ export class CreateEstablishmentRequest
 
   @MinLength(3)
   @ApiProperty()
-  zip_code: string;
+  zipCode: string;
 
   @IsTimeZone()
   @ApiProperty()

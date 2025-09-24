@@ -58,15 +58,15 @@ describe('UnitsService', () => {
       const mockUnits = [
         {
           id: 1,
-          establishment_id: 1,
+          establishmentId: 1,
           name: 'Campo 1',
           type: UnitType.FOOTBALL,
-          surface_type: SurfaceType.ARTIFICIAL_GRASS,
+          surfaceType: SurfaceType.ARTIFICIAL_GRASS,
           indoor: false,
           capacity: 22,
           active: true,
-          created_at: new Date(),
-          updated_at: new Date(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       ];
 
@@ -110,10 +110,10 @@ describe('UnitsService', () => {
   describe('create', () => {
     it('should create a new unit successfully', async () => {
       const createRequest: CreateUnitRequest = {
-        establishment_id: 1,
+        establishmentId: 1,
         name: 'Nuevo Campo',
         type: UnitType.PADDLE,
-        surface_type: SurfaceType.CLAY,
+        surfaceType: SurfaceType.CLAY,
         indoor: true,
         capacity: 4,
       };
@@ -122,8 +122,8 @@ describe('UnitsService', () => {
         id: 1,
         ...createRequest,
         active: true,
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       mockPrismaService.establishments.count.mockResolvedValue(1);
@@ -132,14 +132,14 @@ describe('UnitsService', () => {
       const result = await service.create(createRequest);
 
       expect(prismaService.establishments.count).toHaveBeenCalledWith({
-        where: { id: createRequest.establishment_id },
+        where: { id: createRequest.establishmentId },
       });
       expect(prismaService.units.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
           ...createRequest,
           active: true,
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
         }),
       });
       expect(result).toBeInstanceOf(Unit);
@@ -148,10 +148,10 @@ describe('UnitsService', () => {
 
     it('should throw RpcException when establishment does not exist', async () => {
       const createRequest: CreateUnitRequest = {
-        establishment_id: 999,
+        establishmentId: 999,
         name: 'Campo Inexistente',
         type: UnitType.FOOTBALL,
-        surface_type: SurfaceType.NATURAL_GRASS,
+        surfaceType: SurfaceType.NATURAL_GRASS,
         indoor: false,
         capacity: null,
       };
@@ -172,10 +172,10 @@ describe('UnitsService', () => {
 
     it('should create unit with null optional fields', async () => {
       const createRequest: CreateUnitRequest = {
-        establishment_id: 1,
+        establishmentId: 1,
         name: 'Campo Básico',
         type: UnitType.FOOTBALL,
-        surface_type: null,
+        surfaceType: null,
         indoor: false,
         capacity: null,
       };
@@ -184,8 +184,8 @@ describe('UnitsService', () => {
         id: 2,
         ...createRequest,
         active: true,
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       mockPrismaService.establishments.count.mockResolvedValue(1);
@@ -194,7 +194,7 @@ describe('UnitsService', () => {
       const result = await service.create(createRequest);
 
       expect(result).toBeInstanceOf(Unit);
-      expect(result.surface_type).toBeNull();
+      expect(result.surfaceType).toBeNull();
       expect(result.capacity).toBeNull();
     });
   });
@@ -210,21 +210,21 @@ describe('UnitsService', () => {
 
       const existingUnit = {
         id: unitId,
-        establishment_id: 1,
+        establishmentId: 1,
         name: 'Campo Original',
         type: UnitType.FOOTBALL,
-        surface_type: SurfaceType.ARTIFICIAL_GRASS,
+        surfaceType: SurfaceType.ARTIFICIAL_GRASS,
         indoor: false,
         capacity: 22,
         active: true,
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       const updatedUnit = {
         ...existingUnit,
         ...updateData,
-        updated_at: new Date(),
+        updatedAt: new Date(),
       };
 
       mockPrismaService.units.findFirst.mockResolvedValue(existingUnit);
@@ -238,7 +238,7 @@ describe('UnitsService', () => {
       expect(prismaService.units.update).toHaveBeenCalledWith({
         data: expect.objectContaining({
           ...updateData,
-          updated_at: expect.any(Date),
+          updatedAt: expect.any(Date),
         }),
         where: { id: unitId },
       });
@@ -272,15 +272,15 @@ describe('UnitsService', () => {
       const unitId = 1;
       const deletedUnit = {
         id: unitId,
-        establishment_id: 1,
+        establishmentId: 1,
         name: 'Campo a Eliminar',
         type: UnitType.FOOTBALL,
-        surface_type: SurfaceType.ARTIFICIAL_GRASS,
+        surfaceType: SurfaceType.ARTIFICIAL_GRASS,
         indoor: false,
         capacity: 22,
         active: true,
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       mockPrismaService.units.delete.mockResolvedValue(deletedUnit);

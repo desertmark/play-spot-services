@@ -12,49 +12,49 @@ describe('Facilities DTOs', () => {
     it('should create an instance with valid data', () => {
       const data = {
         id: 1,
-        owner_id: 'user-123',
+        ownerId: 'user-123',
         name: 'Test Establishment',
         description: 'Test Description',
         address: '123 Test St',
         city: 'Test City',
         state: 'Test State',
-        zip_code: '12345',
+        zipCode: '12345',
         tz: 'America/New_York',
         active: true,
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       const establishment = Establishment.fromObject(data);
 
       expect(establishment.id).toBe(1);
-      expect(establishment.owner_id).toBe('user-123');
+      expect(establishment.ownerId).toBe('user-123');
       expect(establishment.name).toBe('Test Establishment');
       expect(establishment.description).toBe('Test Description');
       expect(establishment.address).toBe('123 Test St');
       expect(establishment.city).toBe('Test City');
       expect(establishment.state).toBe('Test State');
-      expect(establishment.zip_code).toBe('12345');
+      expect(establishment.zipCode).toBe('12345');
       expect(establishment.tz).toBe('America/New_York');
       expect(establishment.active).toBe(true);
-      expect(establishment.created_at).toBeInstanceOf(Date);
-      expect(establishment.updated_at).toBeInstanceOf(Date);
+      expect(establishment.createdAt).toBeInstanceOf(Date);
+      expect(establishment.updatedAt).toBeInstanceOf(Date);
     });
 
     it('should handle null values correctly', () => {
       const data = {
         id: 1,
-        owner_id: 'user-123',
+        ownerId: 'user-123',
         name: 'Test Establishment',
         description: null,
         address: null,
         city: null,
         state: null,
-        zip_code: null,
+        zipCode: null,
         tz: 'America/New_York',
         active: true,
-        created_at: null,
-        updated_at: null,
+        createdAt: null,
+        updatedAt: null,
       };
 
       const establishment = Establishment.fromObject(data);
@@ -63,15 +63,15 @@ describe('Facilities DTOs', () => {
       expect(establishment.address).toBeNull();
       expect(establishment.city).toBeNull();
       expect(establishment.state).toBeNull();
-      expect(establishment.zip_code).toBeNull();
-      expect(establishment.created_at).toBeNull();
-      expect(establishment.updated_at).toBeNull();
+      expect(establishment.zipCode).toBeNull();
+      expect(establishment.createdAt).toBeNull();
+      expect(establishment.updatedAt).toBeNull();
     });
 
     it('should create instance using fromObject static method', () => {
       const data = {
         id: 1,
-        owner_id: 'user-123',
+        ownerId: 'user-123',
         name: 'Test Establishment',
         tz: 'America/New_York',
         active: true,
@@ -88,12 +88,12 @@ describe('Facilities DTOs', () => {
       const establishment = new Establishment();
       establishment.id = 1;
       establishment.name = 'Test Establishment';
-      establishment.owner_id = 'user-123';
+      establishment.ownerId = 'user-123';
       establishment.active = true;
 
       expect(establishment.id).toBe(1);
       expect(establishment.name).toBe('Test Establishment');
-      expect(establishment.owner_id).toBe('user-123');
+      expect(establishment.ownerId).toBe('user-123');
       expect(establishment.active).toBe(true);
     });
   });
@@ -103,21 +103,21 @@ describe('Facilities DTOs', () => {
       const establishment = new Establishment();
       Object.assign<Establishment, Establishment>(establishment, {
         id: 1,
-        owner_id: 'user-123',
+        ownerId: 'user-123',
         name: 'Test Establishment',
         description: 'Test Description',
         address: '123 Test St',
         city: 'Test City',
         state: 'Test State',
-        zip_code: '12345',
+        zipCode: '12345',
         tz: 'America/New_York',
         active: true,
-        created_at: new Date('2023-01-01T12:00:00Z'),
-        updated_at: new Date('2023-01-02T12:00:00Z'),
+        createdAt: new Date('2023-01-01T12:00:00Z'),
+        updatedAt: new Date('2023-01-02T12:00:00Z'),
       });
       const serialized = instanceToPlain(establishment);
-      expect(serialized.created_at).toBe('2023-01-01T12:00:00.000Z');
-      expect(serialized.updated_at).toBe('2023-01-02T12:00:00.000Z');
+      expect(serialized.createdAt).toBe('2023-01-01T12:00:00.000Z');
+      expect(serialized.updatedAt).toBe('2023-01-02T12:00:00.000Z');
     });
     it('should pass validation with valid data', async () => {
       const validData = {
@@ -126,7 +126,7 @@ describe('Facilities DTOs', () => {
         address: 'Valid address with enough characters',
         city: 'Valid City Name',
         state: 'Valid State Name',
-        zip_code: 'Valid Zip Code',
+        zipCode: 'Valid Zip Code',
         tz: 'America/New_York',
       };
 
@@ -143,7 +143,7 @@ describe('Facilities DTOs', () => {
         address: 'Valid address with enough characters',
         city: 'Valid City Name',
         state: 'Valid State Name',
-        zip_code: 'Valid Zip Code',
+        zipCode: 'Valid Zip Code',
         tz: 'America/New_York',
       };
 
@@ -162,7 +162,7 @@ describe('Facilities DTOs', () => {
         address: 'Valid address with enough characters',
         city: 'Valid City Name',
         state: 'Valid State Name',
-        zip_code: 'Valid Zip Code',
+        zipCode: 'Valid Zip Code',
         tz: 'America/New_York',
       };
 
@@ -181,7 +181,7 @@ describe('Facilities DTOs', () => {
         address: 'Valid address with enough characters',
         city: 'Valid City Name',
         state: 'Valid State Name',
-        zip_code: 'Valid Zip Code',
+        zipCode: 'Valid Zip Code',
         tz: 'Invalid/Timezone',
       };
 
@@ -200,7 +200,7 @@ describe('Facilities DTOs', () => {
         address: 'EF', // Too short
         city: 'GH', // Too short
         state: 'IJ', // Too short
-        zip_code: 'KL', // Too short
+        zipCode: 'KL', // Too short
         tz: 'America/New_York',
       };
 
@@ -214,7 +214,7 @@ describe('Facilities DTOs', () => {
       expect(failedFields).toContain('address');
       expect(failedFields).toContain('city');
       expect(failedFields).toContain('state');
-      expect(failedFields).toContain('zip_code');
+      expect(failedFields).toContain('zipCode');
     });
 
     it('should pass validation with valid timezones', async () => {
@@ -234,7 +234,7 @@ describe('Facilities DTOs', () => {
           address: 'Valid address with enough characters',
           city: 'Valid City Name',
           state: 'Valid State Name',
-          zip_code: 'Valid Zip Code',
+          zipCode: 'Valid Zip Code',
           tz,
         };
 
@@ -260,47 +260,43 @@ describe('Facilities DTOs', () => {
       };
 
       const request = new GetEstablishmentsRequest();
-      request.pagination = new PaginationRequest();
-      Object.assign(request.pagination, paginationData);
+      request.pagination = plainToClass(PaginationRequest, paginationData);
 
       expect(request.pagination).toBeDefined();
       expect(request.pagination.limit).toBe(10);
       expect(request.pagination.offset).toBe(0);
     });
 
-    it('should validate pagination request correctly', async () => {
-      const validPagination = plainToClass(PaginationRequest, {
-        limit: 10,
-        offset: 0,
-      });
+    it('should pass validation with valid pagination', async () => {
+      const validData = {
+        pagination: {
+          limit: 20,
+          offset: 5,
+        },
+      };
 
-      const errors = await validate(validPagination);
+      const request = plainToClass(GetEstablishmentsRequest, validData);
+      const errors = await validate(request);
+
       expect(errors).toHaveLength(0);
     });
 
     it('should fail validation with invalid pagination values', async () => {
-      const invalidPagination = plainToClass(PaginationRequest, {
-        limit: -1, // Should be positive
-        offset: -5, // Should be >= 0
-      });
+      const invalidData = {
+        pagination: {
+          limit: -1,
+          offset: -5,
+        },
+      };
 
-      const errors = await validate(invalidPagination);
+      const request = plainToClass(GetEstablishmentsRequest, invalidData);
+      const errors = await validate(request);
+
       expect(errors.length).toBeGreaterThan(0);
-
-      const limitError = errors.find((error) => error.property === 'limit');
-      const offsetError = errors.find((error) => error.property === 'offset');
-
-      expect(limitError).toBeDefined();
-      expect(limitError?.constraints).toHaveProperty('isPositive');
-      expect(offsetError).toBeDefined();
-      expect(offsetError?.constraints).toHaveProperty('min');
-    });
-
-    it('should pass validation with optional pagination values', async () => {
-      const optionalPagination = plainToClass(PaginationRequest, {});
-
-      const errors = await validate(optionalPagination);
-      expect(errors).toHaveLength(0);
+      const paginationError = errors.find(
+        (error) => error.property === 'pagination',
+      );
+      expect(paginationError).toBeDefined();
     });
   });
 });

@@ -13,17 +13,17 @@ service EstablishmentsService {
 
 message Establishment {
   int32 id = 1;
-  string owner_id = 2;
+  string ownerId = 2;
   string name = 3;
   optional string description = 4;
   optional string address = 5;
   optional string city = 6;
   optional string state = 7;
-  optional string zip_code = 8;
+  optional string zipCode = 8;
   string tz = 9;
   bool active = 10;
-  optional string created_at = 11;
-  optional string updated_at = 12;
+  optional string createdAt = 11;
+  optional string updatedAt = 12;
 }
 
 message GetEstablishmentsRequest {
@@ -41,7 +41,7 @@ message CreateEstablishmentRequest {
   string address = 3;
   string city = 4;
   string state = 5;
-  string zip_code = 6;
+  string zipCode = 6;
   string tz = 7;
 }
 

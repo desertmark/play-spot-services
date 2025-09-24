@@ -35,9 +35,9 @@ export class EstablishmentsService {
 
   async create(model: Partial<Establishment>): Promise<Establishment> {
     model.active = true;
-    model.owner_id = this.context.userId;
-    model.created_at = new Date();
-    model.updated_at = new Date();
+    model.ownerId = this.context.userId;
+    model.createdAt = new Date();
+    model.updatedAt = new Date();
     const establishment = await this.prisma.establishments.create({
       data: model as Establishment,
     });
@@ -61,7 +61,7 @@ export class EstablishmentsService {
 
     Object.assign<Establishment, Partial<Establishment>>(establishment, {
       ...model,
-      updated_at: new Date(),
+      updatedAt: new Date(),
     });
 
     const updated = await this.prisma.establishments.update({

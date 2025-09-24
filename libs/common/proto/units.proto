@@ -12,15 +12,15 @@ service UnitsService {
 }
 message Unit {
   int32 id = 1;
-  int32 establishment_id = 2;
+  int32 establishmentId = 2;
   string name = 3;
   string type = 4;
-  string surface_type = 5;
+  string surfaceType = 5;
   bool indoor = 6;
   optional int32 capacity = 7;
   bool active = 8;
-  string created_at = 9;
-  string updated_at = 10;
+  string createdAt = 9;
+  string updatedAt = 10;
 }
 message GetUnitsRequest {
   optional common.PaginationRequest pagination = 1;
@@ -32,10 +32,10 @@ message GetUnitsResponse {
 }
 
 message CreateUnitRequest {
-  int32 establishment_id = 2;
+  int32 establishmentId = 2;
   string name = 3;
   string type = 4;
-  optional string surface_type = 5;
+  optional string surfaceType = 5;
   bool indoor = 6;
   optional int32 capacity = 7;
 }

@@ -57,13 +57,13 @@ describe('SlotsController', () => {
         items: [
           {
             id: 1,
-            unit_id: 1,
-            day_of_week: 1,
-            open_time: '08:00',
-            close_time: '22:00',
+            unitId: 1,
+            dayOfWeek: 1,
+            openTime: '08:00',
+            closeTime: '22:00',
             active: true,
-            created_at: new Date(),
-            updated_at: new Date(),
+            createdAt: new Date(),
+            updatedAt: new Date(),
           } as Slot,
         ],
         total: 1,
@@ -94,8 +94,8 @@ describe('SlotsController', () => {
 
     it('should handle filtered requests', async () => {
       const request: GetSlotsRequest = {
-        unit_id: 1,
-        day_of_week: 1,
+        unitId: 1,
+        dayOfWeek: 1,
         pagination: { limit: 5, offset: 0 },
       };
 
@@ -116,21 +116,21 @@ describe('SlotsController', () => {
   describe('createSlot', () => {
     it('should call create service method and return created slot', async () => {
       const request: CreateSlotRequest = {
-        unit_id: 1,
-        day_of_week: 1,
-        open_time: '08:00',
-        close_time: '22:00',
+        unitId: 1,
+        dayOfWeek: 1,
+        openTime: '08:00',
+        closeTime: '22:00',
       };
 
       const expectedResult: Slot = {
         id: 1,
-        unit_id: 1,
-        day_of_week: 1,
-        open_time: '08:00',
-        close_time: '22:00',
+        unitId: 1,
+        dayOfWeek: 1,
+        openTime: '08:00',
+        closeTime: '22:00',
         active: true,
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       } as Slot;
 
       mockSlotsService.create.mockResolvedValue(expectedResult);
@@ -143,18 +143,18 @@ describe('SlotsController', () => {
 
     it('should handle creation without optional fields', async () => {
       const request: CreateSlotRequest = {
-        unit_id: 2,
-        day_of_week: 0, // Sunday
-        open_time: '06:00',
-        close_time: '23:59',
+        unitId: 2,
+        dayOfWeek: 6,
+        openTime: '06:00',
+        closeTime: '23:59',
       };
 
       const expectedResult: Slot = {
         id: 2,
         ...request,
         active: true,
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       } as Slot;
 
       mockSlotsService.create.mockResolvedValue(expectedResult);
@@ -171,22 +171,22 @@ describe('SlotsController', () => {
       const request: UpdateSlotRequest = {
         id: 1,
         model: {
-          unit_id: 1,
-          day_of_week: 1,
-          open_time: '09:00',
-          close_time: '21:00',
+          unitId: 1,
+          dayOfWeek: 1,
+          openTime: '09:00',
+          closeTime: '21:00',
         },
       };
 
       const expectedResult: Slot = {
         id: 1,
-        unit_id: 1,
-        day_of_week: 1,
-        open_time: '09:00',
-        close_time: '21:00',
+        unitId: 1,
+        dayOfWeek: 1,
+        openTime: '09:00',
+        closeTime: '21:00',
         active: true,
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       } as Slot;
 
       mockSlotsService.update.mockResolvedValue(expectedResult);

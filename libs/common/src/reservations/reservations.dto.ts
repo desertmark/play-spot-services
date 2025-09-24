@@ -29,12 +29,13 @@ export class Reservation extends BaseDto {
   @IsDefined()
   @IsUUID()
   @ApiProperty()
-  user_id: string;
+  userId: string;
 
   @IsDefined()
   @IsDateString()
+  @SerializeAsISO()
   @ApiProperty()
-  reservation_date: Date;
+  reservationDate: Date;
 
   @IsEnum(ReservationStatus)
   @ApiProperty()
@@ -42,28 +43,35 @@ export class Reservation extends BaseDto {
 
   @SerializeAsISO()
   @ApiProperty()
-  created_at: Date | null;
+  createdAt: Date | null;
 
   @SerializeAsISO()
   @ApiProperty()
-  updated_at: Date | null;
+  updatedAt: Date | null;
+
+  static fromObject(obj: any & { reservationSlots: any }): Reservation {
+    return super.fromObject<Reservation>({
+      ...obj,
+      slots: obj.reservationSlots,
+    });
+  }
 }
 
 export class CreateReservationRequest
-  implements IUpsertEntity<Reservation, 'status' | 'user_id'>
+  implements IUpsertEntity<Reservation, 'status' | 'userId'>
 {
   @IsDefined()
   // @IsDateString()
   @ApiProperty()
   @IsFutureDate()
-  reservation_date: Date;
+  reservationDate: Date;
 
   @IsDefined()
   @IsArray()
   @IsInt({ each: true })
   @IsPositive({ each: true })
   @ApiProperty()
-  slot_ids: number[];
+  slotIds: number[];
 }
 
 export class GetReservationsRequest {
@@ -71,6 +79,31 @@ export class GetReservationsRequest {
   @ValidateNested()
   @Type(() => PaginationRequest)
   pagination?: PaginationRequest;
+
+  @IsOptional()
+  @IsUUID()
+  @ApiProperty({
+    required: false,
+    description: 'Filter by user ID',
+  })
+  userId?: string;
+
+  @IsOptional()
+  @IsDateString()
+  @ApiProperty({
+    required: false,
+    description: 'Filter by reservation date',
+  })
+  reservationDate?: string;
+
+  @IsOptional()
+  @IsEnum(ReservationStatus)
+  @ApiProperty({
+    required: false,
+    enum: ReservationStatus,
+    description: 'Filter by reservation status',
+  })
+  status?: ReservationStatus;
 }
 
 /**

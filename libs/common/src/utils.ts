@@ -4,45 +4,45 @@ import { Slot } from './facilities/slots.dto';
 export type AnyClass = (new (...args: any[]) => any) | object;
 
 export type ISlot = {
-  open_time: string | Date;
-  close_time: string | Date;
-  day_of_week: Slot['day_of_week'];
+  openTime: string | Date;
+  closeTime: string | Date;
+  dayOfWeek: Slot['dayOfWeek'];
 };
 
 export type IDateSlot = {
-  open_time: Date;
-  close_time: Date;
-  day_of_week: Slot['day_of_week'];
+  openTime: Date;
+  closeTime: Date;
+  dayOfWeek: Slot['dayOfWeek'];
 };
 
 export class SlotUtil {
   static toDateSlot<T extends ISlot>(slot: ISlot): T {
     const clone = cloneInstance(slot);
-    clone.open_time = SlotUtil.timeStringToDate(slot.open_time as string);
-    clone.close_time = SlotUtil.timeStringToDate(slot.close_time as string);
+    clone.openTime = SlotUtil.timeStringToDate(slot.openTime as string);
+    clone.closeTime = SlotUtil.timeStringToDate(slot.closeTime as string);
     return clone as T;
   }
 
   static toStringSlot<T extends ISlot>(slot: ISlot): T {
     const clone = cloneInstance(slot);
-    clone.open_time = SlotUtil.dateToTimestring(slot.open_time as Date);
-    clone.close_time = SlotUtil.dateToTimestring(slot.close_time as Date);
+    clone.openTime = SlotUtil.dateToTimestring(slot.openTime as Date);
+    clone.closeTime = SlotUtil.dateToTimestring(slot.closeTime as Date);
     return clone as T;
   }
 
-  static isOverlapping(slot: ISlot, other_slot: ISlot): boolean {
-    if (slot.day_of_week !== other_slot.day_of_week) {
+  static isOverlapping(slot: ISlot, otherSlot: ISlot): boolean {
+    if (slot.dayOfWeek !== otherSlot.dayOfWeek) {
       return false;
     }
 
-    const slot_open = SlotUtil.normalizeTime(slot.open_time).getTime();
-    const slot_close = SlotUtil.normalizeTime(slot.close_time).getTime();
-    const other_open = SlotUtil.normalizeTime(other_slot.open_time).getTime();
-    const other_close = SlotUtil.normalizeTime(other_slot.close_time).getTime();
+    const slotOpen = SlotUtil.normalizeTime(slot.openTime).getTime();
+    const slotClose = SlotUtil.normalizeTime(slot.closeTime).getTime();
+    const otherOpen = SlotUtil.normalizeTime(otherSlot.openTime).getTime();
+    const otherClose = SlotUtil.normalizeTime(otherSlot.closeTime).getTime();
 
     // Dos intervalos NO se superponen si uno termina antes de que el otro comience
     // Por tanto, se superponen si esto NO es cierto
-    return !(slot_close <= other_open || other_close <= slot_open);
+    return !(slotClose <= otherOpen || otherClose <= slotOpen);
   }
 
   static dateToTimestring(time: Date) {
@@ -83,24 +83,24 @@ export class SlotUtil {
     return new Date(1900, 0, 1, time.getHours(), time.getMinutes());
   }
 
-  static toPrintString({ id, open_time, close_time, day_of_week }: Slot) {
-    return `Slot: ${id} - day: ${DayOfWeek[day_of_week!]} - ${open_time} - ${close_time}`;
+  static toPrintString({ id, openTime, closeTime, dayOfWeek }: Slot) {
+    return `Slot: ${id} - day: ${DayOfWeek[dayOfWeek!]} - ${openTime} - ${closeTime}`;
   }
 
   static areAllSlotsOfTheSameUnit(slots: Slot[]): boolean {
-    return slots.every((slot) => slot.unit_id === slots[0].unit_id);
+    return slots.every((slot) => slot.unitId === slots[0].unitId);
   }
   static areAllSlotsOfTheSameWeekDay(slots: Slot[]): boolean {
-    return slots.every((slot) => slot.day_of_week === slots[0].day_of_week);
+    return slots.every((slot) => slot.dayOfWeek === slots[0].dayOfWeek);
   }
   static areAllSlotsContiguousInTime(slots: Slot[]): boolean {
     return slots
       .map((s) => SlotUtil.toDateSlot<IDateSlot>(s))
-      .sort((a, b) => a.open_time.getTime() - b.open_time.getTime())
+      .sort((a, b) => a.openTime.getTime() - b.openTime.getTime())
       .reduce((acc, slot, ix, sorted) => {
         if (sorted[ix + 1]) {
           const areContiguous =
-            slot.close_time.getTime() === sorted[ix + 1].open_time.getTime();
+            slot.closeTime.getTime() === sorted[ix + 1].openTime.getTime();
           return acc && areContiguous;
         }
         return acc;
