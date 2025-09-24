@@ -1,6 +1,6 @@
 import { GRPC_SLOTS_SERVICE } from '@app/common/constants';
 import { InjectFacilitiesClient } from '@app/common/decorators';
-import { ISlotsClient, Slot } from '@app/common/facilities';
+import { ISlotsClient } from '@app/common/facilities';
 import { PrismaService } from '@app/common/prisma';
 import {
   CreateReservationRequest,
@@ -9,13 +9,14 @@ import {
   ReservationStatus,
 } from '@app/common/reservations';
 import { ContextService } from '@app/common/users/context.service';
-import { IDateSlot, ISlot, SlotUtil } from '@app/common/utils';
+import { SlotUtil } from '@app/common/utils';
 import { Metadata, status } from '@grpc/grpc-js';
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { type ClientGrpc, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import type { Prisma } from '@prisma/client';
 import { PaginationResponse } from '@app/common/dto';
+
 @Injectable()
 export class ReservationsService {
   private slotsService: ISlotsClient;
@@ -33,7 +34,8 @@ export class ReservationsService {
     userId,
     reservationDate,
     status,
-    pagination,
+    limit,
+    offset,
   }: GetReservationsRequest): Promise<PaginationResponse<Reservation>> {
     const where: Prisma.reservationsWhereInput = {};
     if (userId) {
@@ -46,8 +48,8 @@ export class ReservationsService {
       where.status = status;
     }
     const reservations = await this.prisma.reservations.findMany({
-      take: pagination?.limit,
-      skip: pagination?.offset,
+      take: limit,
+      skip: offset,
       include: {
         reservationSlots: true,
       },

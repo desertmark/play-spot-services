@@ -90,9 +90,4 @@ export class UpdateUnitRequest extends BaseDto {
   @Type(() => CreateUnitRequest)
   model: CreateUnitRequest;
 }
-export class GetUnitsRequest {
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => PaginationRequest)
-  pagination?: PaginationRequest;
-}
+export class GetUnitsRequest extends PaginationRequest {}

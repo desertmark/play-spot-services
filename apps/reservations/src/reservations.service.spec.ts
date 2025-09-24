@@ -93,7 +93,8 @@ describe('ReservationsService', () => {
     it('should return paginated reservations', async () => {
       const request = {
         userId: 'test-user-id',
-        pagination: { limit: 10, offset: 0 },
+        limit: 10,
+        offset: 0,
       };
 
       prismaService.reservations.findMany.mockResolvedValue([mockReservation]);
@@ -116,7 +117,8 @@ describe('ReservationsService', () => {
     it('should filter by reservation date', async () => {
       const request = {
         reservationDate: '2023-12-01',
-        pagination: { limit: 10, offset: 0 },
+        limit: 10,
+        offset: 0,
       };
 
       prismaService.reservations.findMany.mockResolvedValue([]);
@@ -137,7 +139,8 @@ describe('ReservationsService', () => {
     it('should filter by status', async () => {
       const request = {
         status: ReservationStatus.CONFIRMED,
-        pagination: { limit: 10, offset: 0 },
+        limit: 10,
+        offset: 0,
       };
 
       prismaService.reservations.findMany.mockResolvedValue([]);

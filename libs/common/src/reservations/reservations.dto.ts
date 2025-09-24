@@ -12,7 +12,7 @@ import {
 } from 'class-validator';
 import { BaseDto, IUpsertEntity, PaginationRequest } from '../dto';
 import { IsFutureDate, SerializeAsISO } from '../decorators';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum ReservationStatus {
@@ -49,8 +49,11 @@ export class Reservation extends BaseDto {
   @ApiProperty()
   updatedAt: Date | null;
 
-  static fromObject(obj: any & { reservationSlots: any }): Reservation {
-    return super.fromObject<Reservation>({
+  static fromObject<T extends object>(
+    this: new () => T,
+    obj: any & { reservationSlots: any },
+  ): T {
+    return super.fromObject<T>({
       ...obj,
       slots: obj.reservationSlots,
     });
@@ -61,7 +64,6 @@ export class CreateReservationRequest
   implements IUpsertEntity<Reservation, 'status' | 'userId'>
 {
   @IsDefined()
-  // @IsDateString()
   @ApiProperty()
   @IsFutureDate()
   reservationDate: Date;
@@ -74,35 +76,20 @@ export class CreateReservationRequest
   slotIds: number[];
 }
 
-export class GetReservationsRequest {
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => PaginationRequest)
-  pagination?: PaginationRequest;
-
+export class GetReservationsRequest extends PaginationRequest {
   @IsOptional()
   @IsUUID()
-  @ApiProperty({
-    required: false,
-    description: 'Filter by user ID',
-  })
+  @ApiProperty({ required: false })
   userId?: string;
 
   @IsOptional()
   @IsDateString()
-  @ApiProperty({
-    required: false,
-    description: 'Filter by reservation date',
-  })
+  @ApiProperty({ required: false })
   reservationDate?: string;
 
   @IsOptional()
   @IsEnum(ReservationStatus)
-  @ApiProperty({
-    required: false,
-    enum: ReservationStatus,
-    description: 'Filter by reservation status',
-  })
+  @ApiProperty({ required: false, enum: ReservationStatus })
   status?: ReservationStatus;
 }
 

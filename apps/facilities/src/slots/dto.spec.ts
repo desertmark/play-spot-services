@@ -253,20 +253,18 @@ describe('Slots DTOs', () => {
 
     it('should fail validation with invalid pagination values', async () => {
       const invalidData = {
-        pagination: {
-          limit: -1,
-          offset: -5,
-        },
+        limit: -1,
+        offset: -5,
       };
 
       const request = plainToClass(GetSlotsRequest, invalidData);
       const errors = await validate(request);
 
       expect(errors.length).toBeGreaterThan(0);
-      const paginationError = errors.find(
-        (error) => error.property === 'pagination',
-      );
-      expect(paginationError).toBeDefined();
+      const limitError = errors.find((error) => error.property === 'limit');
+      const offsetError = errors.find((error) => error.property === 'offset');
+      expect(limitError).toBeDefined();
+      expect(offsetError).toBeDefined();
     });
   });
 });

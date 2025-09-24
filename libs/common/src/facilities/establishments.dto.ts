@@ -69,9 +69,4 @@ export class UpdateEstablishmentRequest {
   model: CreateEstablishmentRequest;
 }
 
-export class GetEstablishmentsRequest {
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => PaginationRequest)
-  pagination?: PaginationRequest;
-}
+export class GetEstablishmentsRequest extends PaginationRequest {}

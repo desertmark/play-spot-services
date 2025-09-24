@@ -45,13 +45,10 @@ export class EstablishmentsGatewayController {
     description: 'List of establishments retrieved successfully',
   })
   async getEstablishments(
-    @Query() req: PaginationRequest,
+    @Query() query: GetEstablishmentsRequest,
     @CurrentMeta() metadata: Metadata,
   ) {
-    return this.establishmentsService.GetEstablishments(
-      { pagination: req as any },
-      metadata,
-    );
+    return this.establishmentsService.GetEstablishments(query, metadata);
   }
 
   @Post()

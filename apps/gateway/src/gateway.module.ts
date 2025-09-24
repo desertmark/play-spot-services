@@ -5,6 +5,7 @@ import { EstablishmentsGatewayController } from './establishments-gateway.contro
 import { UnitsGatewayController } from './units-gateway.controller';
 import { SlotsGatewayController } from './slots-gateway.controller';
 import { ClientsModules } from '@app/common/clients';
+import { ReservationsGatewayController } from './reservations-gateway.controller';
 
 @Module({
   imports: ClientsModules,
@@ -14,6 +15,7 @@ import { ClientsModules } from '@app/common/clients';
     EstablishmentsGatewayController,
     UnitsGatewayController,
     SlotsGatewayController,
+    ReservationsGatewayController,
   ],
   providers: [],
 })

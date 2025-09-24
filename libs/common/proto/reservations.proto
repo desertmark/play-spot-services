@@ -36,10 +36,11 @@ message CreateReservationRequest {
 }
 
 message GetReservationsRequest {
-  optional common.PaginationRequest pagination = 1;
-  optional string userId = 2;
-  optional string reservationDate = 3;
-  optional ReservationStatus status = 4;
+  optional int32 limit = 1;
+  optional int32 offset = 2;
+  optional string userId = 3;
+  optional string reservationDate = 4;
+  optional ReservationStatus status = 5;
 }
 
 message GetReservationsResponse {

@@ -76,12 +76,7 @@ export class UpdateSlotRequest extends BaseDto {
   model: CreateSlotRequest;
 }
 
-export class GetSlotsRequest {
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => PaginationRequest)
-  pagination?: PaginationRequest;
-
+export class GetSlotsRequest extends PaginationRequest {
   @IsOptional()
   @IsPositive()
   @Type(() => Number)

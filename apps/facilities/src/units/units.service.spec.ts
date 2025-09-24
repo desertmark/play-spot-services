@@ -88,7 +88,8 @@ describe('UnitsService', () => {
 
     it('should return paginated units with custom pagination', async () => {
       const request: GetUnitsRequest = {
-        pagination: { limit: 5, offset: 10 },
+        limit: 5,
+        offset: 10,
       };
       const mockUnits = [];
 

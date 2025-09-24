@@ -13,7 +13,8 @@ export class SlotsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findMany({
-    pagination,
+    limit,
+    offset,
     unitId,
     dayOfWeek,
     ids,
@@ -35,8 +36,8 @@ export class SlotsService {
     }
 
     const dbItems = await this.prisma.slots.findMany({
-      take: pagination?.limit,
-      skip: pagination?.offset,
+      take: limit,
+      skip: offset,
       orderBy: [{ id: 'asc' }],
       where,
     });

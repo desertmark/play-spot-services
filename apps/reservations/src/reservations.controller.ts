@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { ReservationsService } from './reservations.service';
 import { GrpcMethod } from '@nestjs/microservices';
 import { GRPC_RESERVATIONS_SERVICE } from '@app/common/constants';

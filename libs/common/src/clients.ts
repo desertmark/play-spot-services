@@ -4,6 +4,8 @@ import {
   GRPC_USERS_PACKAGE,
   GRPC_FACILITIES_CLIENT,
   GRPC_FACILITIES_PACKAGE,
+  GRPC_RESERVATIONS_CLIENT,
+  GRPC_RESERVATIONS_PACKAGE,
 } from './constants';
 
 export const UsersClientModule = ClientsModule.register([
@@ -34,4 +36,20 @@ export const FacilitiesClientModule = ClientsModule.register([
   },
 ]);
 
-export const ClientsModules = [UsersClientModule, FacilitiesClientModule];
+export const ReservationsClientModule = ClientsModule.register([
+  {
+    name: GRPC_RESERVATIONS_CLIENT,
+    transport: Transport.GRPC,
+    options: {
+      package: GRPC_RESERVATIONS_PACKAGE,
+      protoPath: ['libs/common/proto/reservations.proto'],
+      url: process.env.RESERVATIONS_URL,
+    },
+  },
+]);
+
+export const ClientsModules = [
+  UsersClientModule,
+  FacilitiesClientModule,
+  ReservationsClientModule,
+];

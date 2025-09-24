@@ -12,11 +12,12 @@ export class UnitsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findMany({
-    pagination,
+    limit,
+    offset,
   }: GetUnitsRequest): Promise<PaginationResponse<Unit>> {
     const dbItems = await this.prisma.units.findMany({
-      take: pagination?.limit,
-      skip: pagination?.offset,
+      take: limit,
+      skip: offset,
       orderBy: { id: 'asc' },
     });
     const items = dbItems?.map((i) => Unit.fromObject(i));

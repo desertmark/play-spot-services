@@ -74,7 +74,8 @@ describe('SlotsService', () => {
       ];
 
       const request: GetSlotsRequest = {
-        pagination: { limit: 10, offset: 0 },
+        limit: 10,
+        offset: 0,
       };
 
       mockPrismaService.slots.findMany.mockResolvedValue(mockDbSlots);
@@ -100,7 +101,8 @@ describe('SlotsService', () => {
     it('should filter by unitId when provided', async () => {
       const request: GetSlotsRequest = {
         unitId: 1,
-        pagination: { limit: 10, offset: 0 },
+        limit: 10,
+        offset: 0,
       };
 
       mockPrismaService.slots.findMany.mockResolvedValue([]);
@@ -119,7 +121,8 @@ describe('SlotsService', () => {
     it('should filter by dayOfWeek when provided', async () => {
       const request: GetSlotsRequest = {
         dayOfWeek: 1,
-        pagination: { limit: 10, offset: 0 },
+        limit: 10,
+        offset: 0,
       };
 
       mockPrismaService.slots.findMany.mockResolvedValue([]);

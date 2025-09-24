@@ -5,7 +5,14 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(GatewayModule);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true, // Convierte tipos automáticamente
+      },
+    }),
+  );
   const config = new DocumentBuilder()
     .setTitle('Play Spot')
     .setDescription('Play Spot API Reference')

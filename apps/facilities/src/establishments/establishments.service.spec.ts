@@ -79,7 +79,8 @@ describe('EstablishmentsService', () => {
       ];
 
       const request: GetEstablishmentsRequest = {
-        pagination: { limit: 10, offset: 0 },
+        limit: 10,
+        offset: 0,
       };
 
       mockPrismaService.establishments.findMany.mockResolvedValue(
@@ -127,7 +128,8 @@ describe('EstablishmentsService', () => {
 
     it('should handle database errors', async () => {
       const request: GetEstablishmentsRequest = {
-        pagination: { limit: 10, offset: 0 },
+        limit: 10,
+        offset: 0,
       };
 
       const error = new Error('Database connection failed');

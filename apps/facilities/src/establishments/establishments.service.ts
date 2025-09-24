@@ -19,11 +19,12 @@ export class EstablishmentsService {
   ) {}
 
   async findMany({
-    pagination,
+    limit,
+    offset,
   }: GetEstablishmentsRequest): Promise<PaginationResponse<Establishment>> {
     const dbItems = await this.prisma.establishments.findMany({
-      take: pagination?.limit,
-      skip: pagination?.offset,
+      take: limit,
+      skip: offset,
       orderBy: { id: 'asc' },
     });
     const items = dbItems?.map((i) => Establishment.fromObject(i));
