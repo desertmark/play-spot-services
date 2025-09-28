@@ -1,9 +1,3 @@
-delete from facilities.units;
-delete from facilities.establishments;
-delete from facilities.slots;
-
-delete from reservations.reservations;
-delete from reservations."reservationSlots";
 -- ================================
 -- ESTABLISHMENTS (100)
 -- ================================
